@@ -1,0 +1,85 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -----------------------------------------------------------------------------
+// 1. MEMBER PROFILE MODEL
+// -----------------------------------------------------------------------------
+model Profile {
+  id               String   @id @default(uuid())
+  userId           String   @unique // Internal unique identifier or Supabase UUID
+  banglaFullName   String   // বাংলা পূর্ণ নাম (e.g., 'মো: রফিকুল ইসলাম')
+  engFullName      String   // English Full Name (e.g., 'Md. Rafiqul Islam')
+  nickName         String   // ডাকনাম (e.g., 'রফিক')
+  gender           String   // 'পুরুষ' | 'মহিলা'
+  bloodGroup       String   // 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'
+  schoolName       String   // এসএসসি ১৯৯০ এর স্কুলের নাম
+  maritalStatus    String   // 'বিবাহিত' | 'অবিবাহিত' | 'অন্যান্য'
+  childrenCount    Int?     @default(0) // সন্তানের সংখ্যা
+  profession       String   // পেশা ও কর্মক্ষেত্র
+  currentAddress   String   // বর্তমান বাসস্থান / জেলা
+  permanentAddress String   // স্থায়ী ঠিকানা / পৈতৃক ভিটা
+  personalMobile   String   // মূল যোগাযোগের মোবাইল নম্বর
+  altMobile        String   // বিকল্প / জরুরি যোগাযোগের মোবাইল নম্বর
+  profilePicture   String?  // Supabase Storage Public URL (বর্তমান ছবি)
+  thenPhoto        String?  // Supabase Storage Public URL (১৯৯০ সালের স্কুল জীবনের ছবি)
+  aboutMe          String?  // স্কুল জীবনের স্মৃতিচারণ বা আত্মকথা
+  isDeceased       Boolean  @default(false) // প্রয়াত বন্ধুদের জন্য স্মরণিকা ফ্ল্যাগ
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([schoolName])
+  @@index([bloodGroup])
+  @@index([isDeceased])
+}
+
+// -----------------------------------------------------------------------------
+// 2. REUNION & PHOTO GALLERY MODEL
+// -----------------------------------------------------------------------------
+model GalleryItem {
+  id          String   @id @default(uuid())
+  title       String   // ছবির শিরোনাম (বাংলায়)
+  description String?  // বিস্তারিত স্মৃতি বা বিবরণ
+  imageUrl    String   // Supabase Storage Public URL
+  eventDate   String?  // অনুষ্ঠানের তারিখ (e.g., '১৫ জানুয়ারি, ২০২৪')
+  category    String   // 'পুনর্মিলনী', 'স্কুল জীবন', 'ট্যুর ও আড্ডা', 'স্মারক'
+  featured    Boolean  @default(false) // হোমপেজ হাইলাইটের জন্য
+  createdAt   DateTime @default(now())
+
+  @@index([category])
+  @@index([featured])
+}
+
+// -----------------------------------------------------------------------------
+// 3. HUMANITARIAN & SOCIAL WELFARE INITIATIVES
+// -----------------------------------------------------------------------------
+model Initiative {
+  id          String   @id @default(uuid())
+  title       String   // উদ্যোগের শিরোনাম (e.g., 'বন্যা দুর্গতদের ত্রাণ বিতরণ ২০২৪')
+  description String   // বিস্তারিত কর্মসূচি ও অর্জনের বিবরণ
+  date        String   // বাস্তবায়নের তারিখ / সময়কাল
+  location    String   // স্থান / এলাকা
+  images      String[] // Supabase Storage Public URLs
+  budget      String?  // তহবিল / ব্যয়ের হিসাব (e.g., '২,৫০,০০০ টাকা')
+  impact      String?  // সুবিধাভোগীর বিবরণ (e.g., '৬০০+ পরিবার')
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// 4. MODERATED GUESTBOOK & MEMORY WALL
+// -----------------------------------------------------------------------------
+model MemoryMessage {
+  id          String   @id @default(uuid())
+  senderName  String   // স্মৃতিচারণকারীর নাম
+  schoolName  String?  // স্কুলের নাম
+  message     String   // বন্ধুদের উদ্দেশ্যে বার্তা
+  isApproved  Boolean  @default(false) // অ্যাডমিন অ্যাপ্রুভাল ফ্ল্যাগ
+  createdAt   DateTime @default(now())
+
+  @@index([isApproved])
+}
