@@ -7,7 +7,7 @@ import { z } from "zod";
 const gallerySchema = z.object({
   title: z.string().min(1, "শিরোনাম আবশ্যক"),
   description: z.string().optional(),
-  imageUrl: z.string().url("সঠিক ছবির URL দিন"),
+  imageUrl: z.string().min(1, "ছবির URL প্রয়োজন"),
   eventDate: z.string().optional(),
   category: z.string().min(1, "ক্যাটাগরি বাছুন"),
   featured: z.boolean().default(false),

@@ -1,35 +1,187 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef, useCallback } from "react";
 import { GalleryItem } from "@prisma/client";
 import { createGalleryItem, deleteGalleryItem } from "@/actions/gallery";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import Image from "next/image";
-import { Plus, Trash2, Star } from "lucide-react";
+import { Plus, Trash2, Star, UploadCloud, X, ImageIcon, CheckCircle2 } from "lucide-react";
+import { getSignedUploadUrl } from "@/actions/storage";
 
 const CATEGORIES = ["পুনর্মিলনী", "স্কুল জীবন", "ট্যুর ও আড্ডা", "স্মারক"];
+const ACCEPTED = ["image/jpg", "image/jpeg", "image/png", "image/webp", "image/heic"];
+const MAX_SIZE_MB = 10;
+const BUCKET = process.env.NEXT_PUBLIC_STORAGE_BUCKET_GALLERY || "gallery";
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://pzowrpnbbymuvfnwuqhh.supabase.co";
+
+type FileEntry = {
+  file: File;
+  preview: string;
+  status: "pending" | "uploading" | "done" | "error";
+  publicUrl?: string;
+  error?: string;
+};
+
+type FormState = {
+  title: string;
+  category: string;
+  eventDate: string;
+  description: string;
+  featured: boolean;
+};
 
 export default function AdminGalleryClient({ items }: { items: GalleryItem[] }) {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
+  const [files, setFiles] = useState<FileEntry[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState<FormState>({
+    title: "",
+    category: "পুনর্মিলনী",
+    eventDate: "",
+    description: "",
+    featured: false,
+  });
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    startTransition(async () => {
-      const result = await createGalleryItem(formData);
-      if (result.success) {
-        toast.success("ছবি সফলভাবে যোগ হয়েছে!");
-        setOpen(false);
-      } else {
-        toast.error("তথ্য সঠিক নয়।");
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+    const entries: FileEntry[] = [];
+    for (const f of selected) {
+      if (!ACCEPTED.includes(f.type) && !f.name.toLowerCase().endsWith(".heic")) {
+        toast.error(`"${f.name}" — অসমর্থিত ফরম্যাট`);
+        continue;
       }
+      if (f.size > MAX_SIZE_MB * 1024 * 1024) {
+        toast.error(`"${f.name}" — সর্বোচ্চ ${MAX_SIZE_MB} MB এর বেশি`);
+        continue;
+      }
+      entries.push({
+        file: f,
+        preview: URL.createObjectURL(f),
+        status: "pending",
+      });
+    }
+    setFiles((prev) => [...prev, ...entries]);
+    // reset input so same files can be re-selected
+    e.target.value = "";
+  };
+
+  const removeFile = (index: number) => {
+    setFiles((prev) => {
+      const copy = [...prev];
+      URL.revokeObjectURL(copy[index].preview);
+      copy.splice(index, 1);
+      return copy;
     });
+  };
+
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const dt = e.dataTransfer;
+    const synthetic = { target: { files: dt.files, value: "" } } as unknown as React.ChangeEvent<HTMLInputElement>;
+    handleFileChange(synthetic);
+  }, []);
+
+  const uploadAll = async (): Promise<FileEntry[]> => {
+    const updated = [...files];
+    for (let i = 0; i < updated.length; i++) {
+      if (updated[i].status === "done") continue;
+      updated[i] = { ...updated[i], status: "uploading" };
+      setFiles([...updated]);
+
+      const f = updated[i].file;
+      const ext = f.name.split(".").pop() ?? "webp";
+      const storagePath = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+      // 1. Get a signed upload URL from the server (uses service role key)
+      const result = await getSignedUploadUrl(BUCKET, storagePath);
+
+      if ("error" in result) {
+        // Show the actual error so it's visible (e.g. missing service role key)
+        toast.error(`আপলোড ব্যর্থ: ${result.error}`, { duration: 6000 });
+        updated[i] = { ...updated[i], status: "error", error: result.error };
+        setFiles([...updated]);
+        continue;
+      }
+
+      // 2. Upload the file directly to Supabase using the signed URL
+      const uploadRes = await fetch(result.signedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": f.type || "application/octet-stream" },
+        body: f,
+      });
+
+      if (!uploadRes.ok) {
+        const msg = await uploadRes.text().catch(() => uploadRes.statusText);
+        updated[i] = { ...updated[i], status: "error", error: msg };
+      } else {
+        // 3. Build the public URL from the confirmed path
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${result.path}`;
+        updated[i] = { ...updated[i], status: "done", publicUrl };
+      }
+      setFiles([...updated]);
+    }
+    return updated;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (files.length === 0) {
+      toast.error("অন্তত একটি ছবি বেছে নিন।");
+      return;
+    }
+    setSaving(true);
+
+    const uploaded = await uploadAll();
+    const successes = uploaded.filter((u) => u.status === "done" && u.publicUrl);
+    const failures = uploaded.filter((u) => u.status === "error");
+
+    if (failures.length > 0) {
+      toast.error(`${failures.length}টি ছবি আপলোড ব্যর্থ হয়েছে।`);
+    }
+
+    if (successes.length === 0) {
+      setSaving(false);
+      return;
+    }
+
+    // Save each successfully uploaded image to DB
+    await Promise.all(
+      successes.map(async (entry, idx) => {
+        const fd = new FormData();
+        fd.append("title", successes.length === 1 ? form.title : `${form.title} (${idx + 1})`);
+        fd.append("imageUrl", entry.publicUrl!);
+        fd.append("category", form.category);
+        fd.append("eventDate", form.eventDate);
+        fd.append("description", form.description);
+        if (form.featured) fd.append("featured", "true");
+        await createGalleryItem(fd);
+      })
+    );
+
+    toast.success(`${successes.length}টি ছবি সফলভাবে যোগ হয়েছে!`);
+    setSaving(false);
+    setFiles([]);
+    setForm({ title: "", category: "পুনর্মিলনী", eventDate: "", description: "", featured: false });
+    setOpen(false);
   };
 
   const handleDelete = (id: string) => {
@@ -40,53 +192,181 @@ export default function AdminGalleryClient({ items }: { items: GalleryItem[] }) 
     });
   };
 
+  const pendingCount = files.filter((f) => f.status === "pending").length;
+  const doneCount = files.filter((f) => f.status === "done").length;
+
   return (
     <>
+      {/* Header row */}
       <div className="flex justify-end mb-6">
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setFiles([]); } }}>
           <DialogTrigger asChild>
             <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
               <Plus className="w-4 h-4 mr-2" /> ছবি যোগ করুন
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>নতুন ছবি যোগ করুন</DialogTitle></DialogHeader>
-            <form onSubmit={handleAdd} className="space-y-3 mt-2">
-              <div>
-                <label className="text-xs text-slate-500 mb-1 block">শিরোনাম *</label>
-                <Input name="title" required className="rounded-lg text-sm" placeholder="পুনর্মিলনী ২০২৪" />
+
+          <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>ছবি আপলোড করুন</DialogTitle>
+            </DialogHeader>
+
+            <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+              {/* ── Drop zone ─────────────────────────────────────────── */}
+              <div
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+                onClick={() => inputRef.current?.click()}
+                className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/40 transition-colors"
+              >
+                <UploadCloud className="w-8 h-8 mx-auto mb-2 text-slate-400" />
+                <p className="text-sm text-slate-600 font-medium">
+                  এখানে ছবি টেনে আনুন অথবা ক্লিক করুন
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  JPG · JPEG · PNG · WebP · HEIC — সর্বোচ্চ 2 MB প্রতিটি — একসাথে অনেকগুলো বেছে নিন
+                </p>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp,.heic,image/jpg,image/jpeg,image/png,image/webp,image/heic"
+                  multiple
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
               </div>
-              <div>
-                <label className="text-xs text-slate-500 mb-1 block">ছবির URL *</label>
-                <Input name="imageUrl" required type="url" className="rounded-lg text-sm" placeholder="https://..." />
+
+              {/* ── File preview grid ─────────────────────────────────── */}
+              {files.length > 0 && (
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-52 overflow-y-auto pr-1">
+                  {files.map((entry, i) => (
+                    <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-slate-100 group">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={entry.preview} alt="" className="w-full h-full object-cover" />
+                      {/* status overlay */}
+                      {entry.status === "uploading" && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      )}
+                      {entry.status === "done" && (
+                        <div className="absolute inset-0 bg-green-600/40 flex items-center justify-center">
+                          <CheckCircle2 className="w-5 h-5 text-white" />
+                        </div>
+                      )}
+                      {entry.status === "error" && (
+                        <div className="absolute inset-0 bg-red-600/60 flex items-center justify-center">
+                          <X className="w-5 h-5 text-white" />
+                        </div>
+                      )}
+                      {/* remove button */}
+                      {entry.status === "pending" && (
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); removeFile(i); }}
+                          className="absolute top-0.5 right-0.5 bg-black/60 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3 text-white" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  {/* Add more button */}
+                  <div
+                    onClick={() => inputRef.current?.click()}
+                    className="aspect-square rounded-lg border-2 border-dashed border-slate-300 flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-colors"
+                  >
+                    <Plus className="w-5 h-5 text-slate-400" />
+                    <span className="text-[10px] text-slate-400 mt-0.5">আরও</span>
+                  </div>
+                </div>
+              )}
+
+              {files.length > 0 && (
+                <p className="text-xs text-slate-500">
+                  {files.length}টি ছবি বাছাই করা হয়েছে
+                  {doneCount > 0 && ` · ${doneCount}টি আপলোড সম্পন্ন`}
+                </p>
+              )}
+
+              {/* ── Metadata ──────────────────────────────────────────── */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="col-span-2">
+                  <label className="text-xs text-slate-500 mb-1 block">শিরোনাম *</label>
+                  <Input
+                    required
+                    value={form.title}
+                    onChange={(e) => setForm((s) => ({ ...s, title: e.target.value }))}
+                    className="rounded-lg text-sm"
+                    placeholder="পুনর্মিলনী ২০২৪"
+                  />
+                  {files.length > 1 && (
+                    <p className="text-[10px] text-slate-400 mt-0.5">
+                      একাধিক ছবির ক্ষেত্রে শিরোনামে স্বয়ংক্রিয়ভাবে (1), (2)… যোগ হবে
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-500 mb-1 block">ক্যাটাগরি *</label>
+                  <Select value={form.category} onValueChange={(v) => setForm((s) => ({ ...s, category: v ?? s.category }))}>
+                    <SelectTrigger className="rounded-lg text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-500 mb-1 block">তারিখ</label>
+                  <Input
+                    value={form.eventDate}
+                    onChange={(e) => setForm((s) => ({ ...s, eventDate: e.target.value }))}
+                    className="rounded-lg text-sm"
+                    placeholder="১৫ জানুয়ারি, ২০২৪"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="text-xs text-slate-500 mb-1 block">বিবরণ</label>
+                  <textarea
+                    rows={2}
+                    value={form.description}
+                    onChange={(e) => setForm((s) => ({ ...s, description: e.target.value }))}
+                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    placeholder="ছবির বিবরণ..."
+                  />
+                </div>
               </div>
-              <div>
-                <label className="text-xs text-slate-500 mb-1 block">ক্যাটাগরি *</label>
-                <Select name="category" defaultValue="পুনর্মিলনী">
-                  <SelectTrigger className="rounded-lg text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-xs text-slate-500 mb-1 block">তারিখ</label>
-                <Input name="eventDate" className="rounded-lg text-sm" placeholder="১৫ জানুয়ারি, ২০২৪" />
-              </div>
-              <div>
-                <label className="text-xs text-slate-500 mb-1 block">বিবরণ</label>
-                <textarea name="description" rows={2} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="ছবির বিবরণ..." />
-              </div>
+
               <div className="flex items-center gap-2">
-                <input type="checkbox" name="featured" value="true" id="featured" className="rounded" />
+                <input
+                  type="checkbox"
+                  id="featured"
+                  checked={form.featured}
+                  onChange={(e) => setForm((s) => ({ ...s, featured: e.target.checked }))}
+                  className="rounded"
+                />
                 <label htmlFor="featured" className="text-sm text-slate-600">হোমপেজে হাইলাইট করুন</label>
               </div>
-              <Button type="submit" disabled={pending} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
-                {pending ? "যোগ হচ্ছে..." : "ছবি যোগ করুন"}
+
+              <Button
+                type="submit"
+                disabled={saving || files.length === 0}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
+              >
+                {saving
+                  ? `আপলোড হচ্ছে… (${doneCount}/${files.length})`
+                  : files.length > 0
+                  ? `${files.length}টি ছবি আপলোড করুন`
+                  : "ছবি আপলোড করুন"}
               </Button>
             </form>
           </DialogContent>
         </Dialog>
       </div>
 
+      {/* ── Gallery grid ──────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {items.map((item) => (
           <div key={item.id} className="group relative bg-slate-100 rounded-xl overflow-hidden shadow-sm aspect-square">
@@ -96,6 +376,7 @@ export default function AdminGalleryClient({ items }: { items: GalleryItem[] }) 
                 {item.featured && <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />}
                 <button
                   onClick={() => handleDelete(item.id)}
+                  disabled={pending}
                   className="ml-auto bg-red-600 text-white rounded-lg p-1 hover:bg-red-700 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -109,8 +390,12 @@ export default function AdminGalleryClient({ items }: { items: GalleryItem[] }) 
           </div>
         ))}
       </div>
+
       {items.length === 0 && (
-        <div className="text-center py-20 text-slate-400">কোনো ছবি যোগ হয়নি।</div>
+        <div className="text-center py-20 text-slate-400 flex flex-col items-center gap-2">
+          <ImageIcon className="w-10 h-10 text-slate-300" />
+          <p>কোনো ছবি যোগ হয়নি।</p>
+        </div>
       )}
     </>
   );
