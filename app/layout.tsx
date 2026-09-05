@@ -3,8 +3,6 @@ import { Hind_Siliguri } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import RouteProgress from "@/components/layout/RouteProgress";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 
@@ -38,9 +36,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <RouteProgress />
         </Suspense>
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
         <ScrollToTop />
         <Toaster position="top-right" richColors />
       </body>
