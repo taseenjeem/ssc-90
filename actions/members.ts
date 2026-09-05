@@ -6,22 +6,38 @@ import { z } from "zod";
 import * as XLSX from "xlsx";
 
 const profileSchema = z.object({
-  banglaFullName: z.string().min(1),
-  engFullName: z.string().min(1),
-  nickName: z.string().min(1),
-  gender: z.string().min(1),
-  bloodGroup: z.string().min(1),
-  schoolName: z.string().min(1),
-  maritalStatus: z.string().min(1),
-  childrenCount: z.coerce.number().int().min(0).optional(),
-  profession: z.string().min(1),
-  currentAddress: z.string().min(1),
-  permanentAddress: z.string().min(1),
-  personalMobile: z.string().min(1),
-  altMobile: z.string().min(1),
-  profilePicture: z.string().optional().nullable(),
-  thenPhoto: z.string().optional().nullable(),
-  aboutMe: z.string().optional().nullable(),
+  banglaFullName: z.string().min(1, "বাংলা নাম আবশ্যক"),
+  engFullName: z.string().min(1, "ইংরেজি নাম আবশ্যক"),
+  nickName: z.string().min(1, "ডাকনাম আবশ্যক"),
+  gender: z.string().min(1, "লিঙ্গ আবশ্যক"),
+  bloodGroup: z.string().min(1, "রক্তের গ্রুপ আবশ্যক"),
+  schoolName: z.string().min(1, "স্কুলের নাম আবশ্যক"),
+  maritalStatus: z.string().min(1, "বৈবাহিক অবস্থা আবশ্যক"),
+  childrenCount: z.coerce.number().int().min(0).default(0),
+  profession: z.string().min(1, "পেশা আবশ্যক"),
+  currentAddress: z.string().min(1, "বর্তমান ঠিকানা আবশ্যক"),
+  permanentAddress: z.string().min(1, "স্থায়ী ঠিকানা আবশ্যক"),
+  personalMobile: z.string().min(1, "মোবাইল নম্বর আবশ্যক"),
+  altMobile: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v?.trim() || ""),
+  profilePicture: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v?.trim() ? v.trim() : null)),
+  thenPhoto: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v?.trim() ? v.trim() : null)),
+  aboutMe: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v?.trim() ? v.trim() : null)),
   isDeceased: z.boolean().optional().default(false),
 });
 
@@ -34,7 +50,7 @@ export async function createMember(formData: FormData) {
     bloodGroup: formData.get("bloodGroup"),
     schoolName: formData.get("schoolName"),
     maritalStatus: formData.get("maritalStatus"),
-    childrenCount: formData.get("childrenCount"),
+    childrenCount: formData.get("childrenCount") || 0,
     profession: formData.get("profession"),
     currentAddress: formData.get("currentAddress"),
     permanentAddress: formData.get("permanentAddress"),
@@ -48,17 +64,20 @@ export async function createMember(formData: FormData) {
 
   const parsed = profileSchema.safeParse(raw);
   if (!parsed.success) {
-    return { success: false, errors: parsed.error.flatten().fieldErrors };
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    const firstError = Object.values(fieldErrors)[0]?.[0] || "তথ্য যাচাইকরণ ব্যর্থ হয়েছে।";
+    return { success: false, errors: fieldErrors, message: firstError };
   }
 
   const userId = crypto.randomUUID();
-  await prisma.profile.create({
+  const created = await prisma.profile.create({
     data: { ...parsed.data, userId },
   });
 
   revalidatePath("/members");
   revalidatePath("/admin/members");
-  return { success: true };
+  revalidatePath("/");
+  return { success: true, member: created };
 }
 
 export async function updateMember(id: string, formData: FormData) {
@@ -70,7 +89,7 @@ export async function updateMember(id: string, formData: FormData) {
     bloodGroup: formData.get("bloodGroup"),
     schoolName: formData.get("schoolName"),
     maritalStatus: formData.get("maritalStatus"),
-    childrenCount: formData.get("childrenCount"),
+    childrenCount: formData.get("childrenCount") || 0,
     profession: formData.get("profession"),
     currentAddress: formData.get("currentAddress"),
     permanentAddress: formData.get("permanentAddress"),
@@ -84,14 +103,17 @@ export async function updateMember(id: string, formData: FormData) {
 
   const parsed = profileSchema.safeParse(raw);
   if (!parsed.success) {
-    return { success: false, errors: parsed.error.flatten().fieldErrors };
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    const firstError = Object.values(fieldErrors)[0]?.[0] || "তথ্য যাচাইকরণ ব্যর্থ হয়েছে।";
+    return { success: false, errors: fieldErrors, message: firstError };
   }
 
-  await prisma.profile.update({ where: { id }, data: parsed.data });
+  const updated = await prisma.profile.update({ where: { id }, data: parsed.data });
   revalidatePath("/members");
   revalidatePath(`/members/${id}`);
   revalidatePath("/admin/members");
-  return { success: true };
+  revalidatePath("/");
+  return { success: true, member: updated };
 }
 
 export async function deleteMember(id: string) {
