@@ -1,6 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { ArrowRight, Users, School, HandHeart, BookOpen, Heart } from "lucide-react";
+import {
+  ArrowRight,
+  Users,
+  School,
+  HandHeart,
+  BookOpen,
+  Heart,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import FeaturedGallery from "@/components/home/FeaturedGallery";
@@ -10,12 +17,13 @@ import InitiativesPreview from "@/components/home/InitiativesPreview";
 export const revalidate = 3600; // revalidate every hour
 
 async function getStats() {
-  const [memberCount, schoolCount, initiativeCount, memoryCount] = await Promise.all([
-    prisma.profile.count(),
-    prisma.profile.groupBy({ by: ["schoolName"] }).then((r) => r.length),
-    prisma.initiative.count(),
-    prisma.memoryMessage.count({ where: { isApproved: true } }),
-  ]);
+  const [memberCount, schoolCount, initiativeCount, memoryCount] =
+    await Promise.all([
+      prisma.profile.count(),
+      prisma.profile.groupBy({ by: ["schoolName"] }).then((r) => r.length),
+      prisma.initiative.count(),
+      prisma.memoryMessage.count({ where: { isApproved: true } }),
+    ]);
   return { memberCount, schoolCount, initiativeCount, memoryCount };
 }
 
@@ -35,10 +43,30 @@ async function getRecentInitiatives() {
 }
 
 const metrics = [
-  { iconType: "users" as const, label: "নিবন্ধিত সদস্য", key: "memberCount", color: "text-rose-600" },
-  { iconType: "school" as const, label: "প্রতিনিধিত্বকারী স্কুল", key: "schoolCount", color: "text-blue-600" },
-  { iconType: "initiatives" as const, label: "সামাজিক উদ্যোগ", key: "initiativeCount", color: "text-emerald-600" },
-  { iconType: "memories" as const, label: "স্মৃতি সংরক্ষিত", key: "memoryCount", color: "text-amber-600" },
+  {
+    iconType: "users" as const,
+    label: "নিবন্ধিত সদস্য",
+    key: "memberCount",
+    color: "text-rose-600",
+  },
+  {
+    iconType: "school" as const,
+    label: "প্রতিনিধিত্বকারী স্কুল",
+    key: "schoolCount",
+    color: "text-blue-600",
+  },
+  {
+    iconType: "initiatives" as const,
+    label: "সামাজিক উদ্যোগ",
+    key: "initiativeCount",
+    color: "text-emerald-600",
+  },
+  {
+    iconType: "memories" as const,
+    label: "স্মৃতি সংরক্ষিত",
+    key: "memoryCount",
+    color: "text-amber-600",
+  },
 ];
 
 export default async function HomePage() {
@@ -71,7 +99,9 @@ export default async function HomePage() {
         <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto">
           <div className="mb-6 inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5">
             <Heart className="w-4 h-4 text-rose-400 fill-rose-400" />
-            <span className="text-white/80 text-sm font-medium">SSC Batch 1990 · এক অনন্য বন্ধন</span>
+            <span className="text-white/80 text-sm font-medium">
+              SSC Batch 1990 · এক অনন্য বন্ধন
+            </span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
@@ -83,8 +113,8 @@ export default async function HomePage() {
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            ১৯৯০ সালের এসএসসি ব্যাচের সকল বন্ধুদের একত্রিত করার এই প্ল্যাটফর্মে আপনাকে স্বাগতম।
-            স্মৃতিচারণ করুন, যোগাযোগ রাখুন, একসাথে এগিয়ে যান।
+            ১৯৯০ সালের এসএসসি ব্যাচের সকল বন্ধুদের একত্রিত করার এই প্ল্যাটফর্মে
+            আপনাকে স্বাগতম। স্মৃতিচারণ করুন, যোগাযোগ রাখুন, একসাথে এগিয়ে যান।
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -143,9 +173,15 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <Badge className="bg-rose-100 text-rose-700 border-0 mb-3">বিশেষ মুহূর্ত</Badge>
-                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">স্মরণীয় মুহূর্তসমূহ</h2>
-                <p className="text-slate-500 mt-2">পুনর্মিলনী ও বিশেষ অনুষ্ঠানের স্মৃতি</p>
+                <Badge className="bg-rose-100 text-rose-700 border-0 mb-3">
+                  বিশেষ মুহূর্ত
+                </Badge>
+                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">
+                  স্মরণীয় মুহূর্তসমূহ
+                </h2>
+                <p className="text-slate-500 mt-2">
+                  পুনর্মিলনী ও বিশেষ অনুষ্ঠানের স্মৃতি
+                </p>
               </div>
               <Link
                 href="/gallery"
@@ -165,9 +201,15 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <Badge className="bg-emerald-100 text-emerald-700 border-0 mb-3">সামাজিক দায়বদ্ধতা</Badge>
-                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">সাম্প্রতিক উদ্যোগ</h2>
-                <p className="text-slate-500 mt-2">বন্ধুরা মিলে সমাজের জন্য কাজ করছে</p>
+                <Badge className="bg-emerald-100 text-emerald-700 border-0 mb-3">
+                  সামাজিক দায়বদ্ধতা
+                </Badge>
+                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">
+                  সাম্প্রতিক উদ্যোগ
+                </h2>
+                <p className="text-slate-500 mt-2">
+                  বন্ধুরা মিলে সমাজের জন্য কাজ করছে
+                </p>
               </div>
               <Link
                 href="/initiatives"
@@ -202,7 +244,7 @@ export default async function HomePage() {
               asChild
               variant="outline"
               size="lg"
-              className="border-white/50 text-white hover:bg-white/10 font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105"
+              className="bg-white text-rose-700 hover:bg-rose-50 font-semibold px-8 py-3 rounded-xl shadow-lg transition-all hover:scale-105"
             >
               <Link href="/memories">স্মৃতি শেয়ার করুন</Link>
             </Button>
