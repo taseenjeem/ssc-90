@@ -4,6 +4,7 @@ import { Profile } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { School, Droplets, ArrowRight, User } from "lucide-react";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 interface MemberCardProps {
   member: Profile;
@@ -31,7 +32,10 @@ export default function MemberCard({ member }: MemberCardProps) {
             alt={member.banglaFullName}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            quality={85}
+            placeholder="blur"
+            blurDataURL={getShimmerDataUrl(300, 176)}
           />
         ) : (
           <div className="flex flex-col items-center gap-2">

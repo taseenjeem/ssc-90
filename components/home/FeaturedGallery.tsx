@@ -13,6 +13,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { GalleryItem } from "@prisma/client";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 interface FeaturedGalleryProps {
   items: GalleryItem[];
@@ -46,6 +47,9 @@ export default function FeaturedGallery({ items }: FeaturedGalleryProps) {
               fill
               className="object-cover group-hover:scale-110 transition-transform duration-500"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              quality={85}
+              placeholder="blur"
+              blurDataURL={getShimmerDataUrl(600, 450)}
             />
             {/* Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

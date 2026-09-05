@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Profile } from "@prisma/client";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { User, ZoomIn, X } from "lucide-react";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 interface AvatarZoomDialogProps {
   member: Profile;
@@ -22,7 +23,12 @@ export default function AvatarZoomDialog({ member }: AvatarZoomDialogProps) {
                 src={member.profilePicture}
                 alt={member.banglaFullName}
                 fill
+                priority
+                sizes="(max-width: 640px) 112px, 128px"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
+                placeholder="blur"
+                blurDataURL={getShimmerDataUrl(128, 128)}
+                quality={90}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
@@ -45,7 +51,11 @@ export default function AvatarZoomDialog({ member }: AvatarZoomDialogProps) {
               src={member.profilePicture}
               alt={member.banglaFullName}
               fill
+              sizes="(max-width: 640px) 90vw, 448px"
               className="object-contain"
+              quality={95}
+              placeholder="blur"
+              blurDataURL={getShimmerDataUrl(448, 448)}
             />
           </div>
         ) : (

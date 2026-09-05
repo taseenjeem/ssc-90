@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 interface ThenNowSliderProps {
   thenSrc: string;
@@ -42,7 +43,10 @@ export default function ThenNowSlider({ thenSrc, nowSrc, name }: ThenNowSliderPr
             alt={`${name} - ১৯৯০ সালে`}
             fill
             className="object-cover"
-            sizes="300px"
+            sizes="(max-width: 640px) 100vw, 320px"
+            quality={85}
+            placeholder="blur"
+            blurDataURL={getShimmerDataUrl(320, 320)}
           />
         ) : nowSrc ? (
           <Image
@@ -50,7 +54,10 @@ export default function ThenNowSlider({ thenSrc, nowSrc, name }: ThenNowSliderPr
             alt={`${name} - বর্তমান ছবি`}
             fill
             className="object-cover"
-            sizes="300px"
+            sizes="(max-width: 640px) 100vw, 320px"
+            quality={85}
+            placeholder="blur"
+            blurDataURL={getShimmerDataUrl(320, 320)}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-400 text-sm">

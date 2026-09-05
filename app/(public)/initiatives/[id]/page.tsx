@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Users, Banknote, ArrowLeft } from "lucide-react";
 import InitiativeLightbox from "@/components/initiatives/InitiativeLightbox";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 export const revalidate = 3600;
 
@@ -39,7 +40,12 @@ export default async function InitiativeDetailPage({
               src={initiative.images[0]}
               alt={initiative.title}
               fill
+              priority
               className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              quality={85}
+              placeholder="blur"
+              blurDataURL={getShimmerDataUrl(1024, 384)}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           </div>

@@ -4,6 +4,7 @@ import { Initiative } from "@prisma/client";
 import { MapPin, Calendar, Users, ArrowRight, HandHeart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 interface InitiativesPreviewProps {
   initiatives: Initiative[];
@@ -29,7 +30,10 @@ export default function InitiativesPreview({ initiatives }: InitiativesPreviewPr
                   alt={initiative.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 768px) 100vw, 33vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  quality={85}
+                  placeholder="blur"
+                  blurDataURL={getShimmerDataUrl(600, 300)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
                 {initiative.images.length > 1 && (

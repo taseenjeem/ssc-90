@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HandHeart, MapPin, Calendar, Users, ArrowRight } from "lucide-react";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 export const revalidate = 3600;
 
@@ -57,6 +58,10 @@ export default async function InitiativesPage() {
                       alt={initiative.title}
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      quality={85}
+                      placeholder="blur"
+                      blurDataURL={getShimmerDataUrl(400, 200)}
                     />
                   </div>
                 )}

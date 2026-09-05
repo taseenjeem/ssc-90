@@ -14,6 +14,7 @@ import { GalleryItem } from "@prisma/client";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 const CATEGORIES = ["সব", "পুনর্মিলনী", "স্কুল জীবন", "ট্যুর ও আড্ডা", "স্মারক"];
 
@@ -67,8 +68,12 @@ export default function GalleryLightbox({ items }: GalleryLightboxProps) {
               src={item.imageUrl}
               alt={item.title}
               fill
+              priority={i < 4}
               className="object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+              quality={85}
+              placeholder="blur"
+              blurDataURL={getShimmerDataUrl(400, 400)}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">

@@ -20,6 +20,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 import {
   Select,
   SelectContent,
@@ -412,7 +413,16 @@ export default function AdminGalleryClient({ items }: { items: GalleryItem[] }) 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {items.map((item) => (
           <div key={item.id} className="group relative bg-slate-100 rounded-xl overflow-hidden shadow-sm aspect-square">
-            <Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="200px" />
+            <Image
+              src={item.imageUrl}
+              alt={item.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
+              quality={80}
+              placeholder="blur"
+              blurDataURL={getShimmerDataUrl(200, 200)}
+            />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
               <div className="flex justify-between items-start">
                 {item.featured && <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />}

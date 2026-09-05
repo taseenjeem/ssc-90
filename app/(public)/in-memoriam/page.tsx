@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Flower2, School, User } from "lucide-react";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 export const revalidate = 3600;
 
@@ -54,6 +55,10 @@ export default async function InMemoriamPage() {
                       alt={member.banglaFullName}
                       fill
                       className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      quality={85}
+                      placeholder="blur"
+                      blurDataURL={getShimmerDataUrl(350, 208)}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full">
