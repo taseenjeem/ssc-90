@@ -4,102 +4,71 @@ import { useState, useMemo } from "react";
 import { Profile } from "@prisma/client";
 import MemberCard from "@/components/members/MemberCard";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface MembersClientProps {
   members: Profile[];
-  schools: string[];
-  bloodGroups: string[];
+  schools?: string[];
+  bloodGroups?: string[];
 }
 
-export default function MembersClient({ members, schools, bloodGroups }: MembersClientProps) {
+export default function MembersClient({ members }: MembersClientProps) {
   const [query, setQuery] = useState("");
-  const [school, setSchool] = useState("all");
-  const [bloodGroup, setBloodGroup] = useState("all");
 
   const filtered = useMemo(() => {
+    const q = query.toLowerCase().trim();
+    if (!q) return members;
+
     return members.filter((m) => {
-      const q = query.toLowerCase();
-      const matchQuery =
-        !q ||
+      return (
         m.banglaFullName.toLowerCase().includes(q) ||
         m.engFullName.toLowerCase().includes(q) ||
-        m.nickName.toLowerCase().includes(q);
-      const matchSchool = school === "all" || m.schoolName === school;
-      const matchBlood = bloodGroup === "all" || m.bloodGroup === bloodGroup;
-      return matchQuery && matchSchool && matchBlood;
+        m.nickName.toLowerCase().includes(q) ||
+        m.schoolName.toLowerCase().includes(q) ||
+        m.profession.toLowerCase().includes(q) ||
+        m.personalMobile.includes(q)
+      );
     });
-  }, [members, query, school, bloodGroup]);
+  }, [members, query]);
 
   return (
     <>
-      {/* Filter Controls */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-8">
-        <div className="flex items-center gap-2 mb-3">
-          <SlidersHorizontal className="w-4 h-4 text-rose-600" />
-          <span className="text-sm font-semibold text-slate-700">ফিল্টার ও অনুসন্ধান</span>
+      {/* Search Bar */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 sm:p-5 mb-8">
+        <div className="relative">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Input
+            placeholder="নাম, ডাকনাম, স্কুল, পেশা বা মোবাইল নম্বর দিয়ে খুঁজুন..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="pl-10 pr-10 border-slate-200 focus:border-rose-400 focus:ring-rose-400 rounded-xl h-11 text-base sm:text-sm"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+              title="অনুসন্ধান মুছুন"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input
-              placeholder="নাম বা ডাকনাম দিয়ে খুঁজুন..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="pl-9 border-slate-200 focus:border-rose-400 focus:ring-rose-400 rounded-xl"
-            />
-          </div>
 
-          <Select value={school} onValueChange={(val) => setSchool(val ?? "all")}>
-            <SelectTrigger className="border-slate-200 rounded-xl">
-              <SelectValue placeholder="স্কুল বাছুন" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">সকল স্কুল</SelectItem>
-              {schools.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={bloodGroup} onValueChange={(val) => setBloodGroup(val ?? "all")}>
-            <SelectTrigger className="border-slate-200 rounded-xl">
-              <SelectValue placeholder="রক্তের গ্রুপ" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">সকল গ্রুপ</SelectItem>
-              {bloodGroups.map((bg) => (
-                <SelectItem key={bg} value={bg}>
-                  {bg}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 text-xs text-slate-500">
           <p>
-            <strong className="text-slate-800 font-semibold">{filtered.length}</strong> জন সদস্য পাওয়া গেছে
+            <strong className="text-slate-800 font-semibold">
+              {filtered.length}
+            </strong>{" "}
+            জন সদস্য প্রদর্শিত হচ্ছে (মোট {members.length} জন)
           </p>
-          {(query || school !== "all" || bloodGroup !== "all") && (
+          {query && (
             <button
-              onClick={() => {
-                setQuery("");
-                setSchool("all");
-                setBloodGroup("all");
-              }}
+              onClick={() => setQuery("")}
               className="text-rose-600 hover:text-rose-700 font-semibold hover:underline"
             >
-              ফিল্টার মুছুন
+              অনুসন্ধান মুছুন
             </button>
           )}
         </div>
@@ -125,15 +94,15 @@ export default function MembersClient({ members, schools, bloodGroups }: Members
       ) : (
         <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200 text-slate-400">
           <Search className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-          <p className="text-base font-semibold text-slate-700">কোনো সদস্য পাওয়া যায়নি</p>
-          <p className="text-xs text-slate-400 mt-1">অনুসন্ধানের ফিল্টার বা বানান পরিবর্তন করে আবার চেষ্টা করুন।</p>
-          {(query || school !== "all" || bloodGroup !== "all") && (
+          <p className="text-base font-semibold text-slate-700">
+            কোনো সদস্য পাওয়া যায়নি
+          </p>
+          <p className="text-xs text-slate-400 mt-1">
+            অনুসন্ধানের বানান পরিবর্তন করে আবার চেষ্টা করুন।
+          </p>
+          {query && (
             <button
-              onClick={() => {
-                setQuery("");
-                setSchool("all");
-                setBloodGroup("all");
-              }}
+              onClick={() => setQuery("")}
               className="mt-4 px-4 py-2 bg-rose-50 text-rose-700 text-xs font-semibold rounded-xl hover:bg-rose-100 transition-colors"
             >
               সকল সদস্য দেখান

@@ -22,7 +22,7 @@ const BLOOD_COLORS: Record<string, string> = {
 
 export default function MemberCard({ member }: MemberCardProps) {
   return (
-    <div className="group bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col">
+    <div className="group bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col">
       {/* Avatar */}
       <div className="relative h-44 bg-gradient-to-br from-rose-50 to-slate-100 flex items-center justify-center overflow-hidden">
         {member.profilePicture ? (
@@ -65,23 +65,18 @@ export default function MemberCard({ member }: MemberCardProps) {
         <h3 className="font-bold text-slate-900 text-base leading-tight">
           {member.banglaFullName}
           {member.nickName && (
-            <span className="text-rose-500 font-normal text-sm ml-1">({member.nickName})</span>
+            <span className="text-rose-500 font-normal text-sm ml-1">
+              ({member.nickName})
+            </span>
           )}
         </h3>
-        <p className="text-xs text-slate-400 mt-0.5 mb-3">{member.engFullName}</p>
+        <p className="text-xs text-slate-400 mt-0.5 mb-3">
+          {member.engFullName}
+        </p>
 
         <div className="flex items-center gap-1.5 text-xs text-slate-600 mb-2">
           <School className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
           <span className="line-clamp-1">{member.schoolName}</span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 mb-4">
-          <span className="bg-slate-100 text-slate-700 rounded-lg px-2 py-0.5 font-medium">{member.profession}</span>
-          {member.currentAddress && (
-            <span className="bg-rose-50 text-rose-700 rounded-lg px-2 py-0.5 line-clamp-1 max-w-[140px]">
-              {member.currentAddress}
-            </span>
-          )}
         </div>
 
         <Button

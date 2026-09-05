@@ -16,9 +16,6 @@ export default async function MembersPage() {
     where: { isDeceased: false },
   });
 
-  const schools = [...new Set(members.map((m) => m.schoolName))].sort();
-  const bloodGroups = [...new Set(members.map((m) => m.bloodGroup))].sort();
-
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -39,7 +36,7 @@ export default async function MembersPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <MembersClient members={members} schools={schools} bloodGroups={bloodGroups} />
+        <MembersClient members={members} />
       </div>
     </div>
   );
