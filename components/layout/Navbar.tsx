@@ -26,13 +26,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <div className="bg-gradient-to-br from-rose-500 to-red-600 p-2 rounded-xl shadow-md group-hover:shadow-rose-300 transition-all duration-300">
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-bold text-rose-700">এসএসসি ব্যাচ ৯০</span>
-              <span className="text-[10px] text-slate-500 font-medium">SSC Batch 1990</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-bold text-rose-700">এসএসসি ব্যাচ ৯০</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold border border-rose-200 leading-none">
+                  শেরপুর
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-500 font-medium">শেরপুর জেলা অ্যালামনাই</span>
             </div>
           </Link>
 
@@ -91,6 +96,10 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              <div className="mt-2 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 px-3">
+                <span>শেরপুর জেলা অ্যালামনাই</span>
+                <span>১৯৯০ ব্যাচ</span>
+              </div>
             </div>
           </motion.div>
         )}

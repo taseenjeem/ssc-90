@@ -35,7 +35,7 @@ export default async function BloodBankPage() {
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3">রক্তদান ব্যাংক</h1>
           <p className="text-red-200 text-lg max-w-xl mx-auto">
-            জরুরি মুহূর্তে আপনার পাশে থাকতে প্রস্তুত ব্যাচের বন্ধুরা
+            শেরপুর জেলা ও আশেপাশের যে কোনো জরুরি প্রয়োজনে পাশে থাকতে প্রস্তুত ব্যাচের বন্ধুরা
           </p>
           <Badge className="mt-4 bg-red-600/60 text-white border-0 text-sm px-3 py-1">
             {donors.length} জন সম্ভাব্য রক্তদাতা

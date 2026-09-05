@@ -22,13 +22,18 @@ export default function Footer() {
                 <GraduationCap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-white font-bold text-lg leading-tight">এসএসসি ব্যাচ ৯০</p>
-                <p className="text-slate-400 text-xs">SSC Batch 1990 Alumni</p>
+                <p className="text-white font-bold text-lg leading-tight">
+                  এসএসসি ব্যাচ ৯০ (শেরপুর জেলা)
+                </p>
+                <p className="text-slate-400 text-xs">
+                  SSC Batch 1990 Alumni • Sherpur District
+                </p>
               </div>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
-              তিন দশকের বন্ধুত্ব, স্মৃতির আঙিনায় চিরন্তন। ১৯৯০ সালের এসএসসি ব্যাচের 
-              অ্যালামনাই ও স্মৃতিচারণ প্ল্যাটফর্ম।
+              শেরপুর জেলার বিভিন্ন বিদ্যালয় থেকে ১৯৯০ সালে এসএসসি উত্তীর্ণ
+              বন্ধুদের ঐক্যবদ্ধ ও আত্মিক মিলনমেলা। তিন দশকের অটুট বন্ধুত্ব ও
+              স্মৃতির আঙিনায় চিরন্তন বন্ধন।
             </p>
           </div>
 
@@ -59,11 +64,11 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-slate-400">
                 <Phone className="w-4 h-4 text-rose-400 flex-shrink-0" />
-                <span>ব্যাচ সচিবালয়ের সাথে যোগাযোগ করুন</span>
+                <span>+8801711362715</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-slate-400">
                 <Mail className="w-4 h-4 text-rose-400 flex-shrink-0" />
-                <span>sscbatch90@alumni.edu.bd</span>
+                <span>support@ssc90sherpur.com</span>
               </div>
             </div>
           </div>
@@ -71,11 +76,13 @@ export default function Footer() {
 
         <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>
-            © ২০২৬ এসএসসি ব্যাচ ৯০ অ্যালামনাই। সর্বস্বত্ব সংরক্ষিত।
+            © ২০২৬ এসএসসি ব্যাচ ৯০ (শেরপুর জেলা) অ্যালামনাই। সর্বস্বত্ব
+            সংরক্ষিত।
           </p>
           <div className="flex items-center gap-4">
             <p className="flex items-center gap-1">
-              তৈরি করা হয়েছে <Heart className="w-3 h-3 text-rose-500" /> দিয়ে বন্ধুদের জন্য
+              তৈরি করা হয়েছে <Heart className="w-3 h-3 text-rose-500" /> দিয়ে
+              বন্ধুদের জন্য
             </p>
             <span className="text-slate-700">·</span>
             <Link

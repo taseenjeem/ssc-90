@@ -44,11 +44,11 @@ export default function AdminNav({ title, subtitle }: AdminNavProps) {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-white font-bold text-sm sm:text-base leading-none">এসএসসি ব্যাচ ৯০</span>
-                  <span className="hidden sm:inline text-[10px] bg-rose-500/20 text-rose-300 font-semibold px-2 py-0.5 rounded-full border border-rose-500/30">
-                    অ্যাডমিন প্যানেল
+                  <span className="text-[10px] bg-rose-500/20 text-rose-300 font-semibold px-2 py-0.5 rounded-full border border-rose-500/30">
+                    শেরপুর · অ্যাডমিন
                   </span>
                 </div>
-                <p className="hidden sm:block text-[11px] text-slate-400 mt-0.5">ম্যানেজমেন্ট কন্ট্রোল সেন্টার</p>
+                <p className="hidden sm:block text-[11px] text-slate-400 mt-0.5">শেরপুর জেলা অ্যালামনাই ম্যানেজমেন্ট</p>
               </div>
             </Link>
           </div>

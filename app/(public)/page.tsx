@@ -63,7 +63,7 @@ const metrics = [
   },
   {
     iconType: "school" as const,
-    label: "প্রতিনিধিত্বকারী স্কুল",
+    label: "শেরপুরের প্রতিনিধিত্বকারী স্কুল",
     key: "schoolCount",
     color: "text-blue-600",
   },
@@ -109,26 +109,38 @@ export default async function HomePage() {
           }}
         />
 
-        <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto">
+        <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto py-12">
           <div className="mb-6 inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5">
             <Heart className="w-4 h-4 text-rose-400 fill-rose-400" />
             <span className="text-white/80 text-sm font-medium">
-              SSC Batch 1990 · এক অনন্য বন্ধন
+              শেরপুর জেলা · এসএসসি ব্যাচ ১৯৯০ এর অ্যালামনাই
             </span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            তিন দশকের বন্ধুত্ব,
+            শেরপুরের বন্ধুদের তিন দশকের বন্ধন,
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-400">
               স্মৃতির আঙিনায় চিরন্তন
             </span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            ১৯৯০ সালের এসএসসি ব্যাচের সকল বন্ধুদের একত্রিত করার এই প্ল্যাটফর্মে
-            আপনাকে স্বাগতম। স্মৃতিচারণ করুন, যোগাযোগ রাখুন, একসাথে এগিয়ে যান।
+          <p className="text-lg sm:text-xl text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed">
+            শেরপুর জেলার সকল বিদ্যালয়ের ১৯৯০ সালের এসএসসি উত্তীর্ণ বন্ধুদের একত্রিত করার এই অনলাইন অ্যালামনাই প্ল্যাটফর্মে আপনাকে স্বাগতম। স্মৃতিচারণ করুন, যোগাযোগ রাখুন, একসাথে এগিয়ে যান।
           </p>
+
+          {/* Upazilas of Sherpur District */}
+          <div className="mb-10 flex flex-wrap items-center justify-center gap-2 text-xs text-white/70">
+            <span className="text-rose-400 font-semibold">শেরপুর জেলার অঞ্চল:</span>
+            {["শেরপুর সদর", "নকলা", "নালিতাবাড়ী", "শ্রীবরদী", "ঝিনাইগাতী"].map((upazila) => (
+              <span
+                key={upazila}
+                className="bg-white/10 hover:bg-white/15 border border-white/15 px-2.5 py-1 rounded-full backdrop-blur-sm transition-colors text-white/90"
+              >
+                {upazila}
+              </span>
+            ))}
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -304,10 +316,10 @@ export default async function HomePage() {
               </div>
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold text-white">
-                  জরুরি রক্তের প্রয়োজনে ব্যাচ পরিবার
+                  শেরপুর জেলায় জরুরি রক্তের প্রয়োজনে ব্যাচ পরিবার
                 </h3>
                 <p className="text-slate-300 text-sm mt-1">
-                  যে কোনো রক্তের গ্রুপের জন্য বন্ধুদের সাথে যোগাযোগ করুন অথবা রক্তদাতা হিসেবে যুক্ত থাকুন
+                  শেরপুরসহ যেকোনো স্থানে রক্তের গ্রুপ মেলাতে বন্ধুদের সাথে যোগাযোগ করুন অথবা রক্তদাতা হিসেবে পাশে থাকুন
                 </p>
               </div>
             </div>
@@ -328,10 +340,10 @@ export default async function HomePage() {
       <section className="py-20 bg-gradient-to-r from-rose-600 to-red-700">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            আপনি কি ব্যাচের সদস্য?
+            আপনি কি শেরপুর জেলার এসএসসি ৯০ ব্যাচের বন্ধু?
           </h2>
           <p className="text-rose-100 text-lg mb-8 max-w-2xl mx-auto">
-            আপনার তথ্য যোগ করুন এবং পুরোনো বন্ধুদের সাথে আবার সংযুক্ত হন।
+            আপনার তথ্য যোগ করুন এবং শেরপুরের সকল স্কুলের পুরোনো সহপাঠীদের সাথে আবার সংযুক্ত হন।
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button

@@ -27,7 +27,7 @@ export default async function MemoriesPage() {
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3">স্মৃতির দেয়াল</h1>
           <p className="text-amber-200 text-lg max-w-xl mx-auto">
-            পুরোনো স্মৃতি, হারানো বন্ধু, এবং ভুলে না যাওয়া মুহূর্তের কথা লিখুন
+            শেরপুরের স্কুল জীবনের পুরোনো স্মৃতি, হারানো বন্ধু, এবং সোনালী মুহূর্তের কথা লিখুন
           </p>
           <Badge className="mt-4 bg-amber-600/60 text-white border-0 text-sm px-3 py-1">
             {messages.length} টি স্মৃতিবার্তা

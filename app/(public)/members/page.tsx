@@ -27,7 +27,7 @@ export default async function MembersPage() {
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3">সদস্য ডিরেক্টরি</h1>
           <p className="text-slate-300 text-lg">
-            ব্যাচের সকল বন্ধুদের সাথে পুনরায় যোগাযোগ করুন
+            শেরপুর জেলার এসএসসি ৯০ ব্যাচের সকল বন্ধুদের সাথে পুনরায় যোগাযোগ করুন
           </p>
           <Badge className="mt-4 bg-rose-600/60 text-white border-0 text-sm px-3 py-1">
             {members.length} জন সদস্য নিবন্ধিত
