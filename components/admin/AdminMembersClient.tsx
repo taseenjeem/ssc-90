@@ -3,20 +3,9 @@
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Profile } from "@prisma/client";
-import {
-  createMember,
-  deleteMember,
-  bulkCreateMembers,
-} from "@/actions/members";
+import { deleteMember, bulkCreateMembers } from "@/actions/members";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -33,16 +22,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
 import {
-  UserPlus,
   Upload,
   MoreVertical,
   Trash2,
@@ -51,252 +32,10 @@ import {
   Pencil,
 } from "lucide-react";
 import EditMemberDialog from "./EditMemberDialog";
-
-const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
-const GENDER_OPTIONS = ["পুরুষ", "মহিলা"];
-const MARITAL_OPTIONS = ["বিবাহিত", "অবিবাহিত", "অন্যান্য"];
+import CreateMemberDialog from "./CreateMemberDialog";
 
 interface AdminMembersClientProps {
   members: Profile[];
-}
-
-function MemberFormDialog({ onDone }: { onDone: () => void }) {
-  const [open, setOpen] = useState(false);
-  const [pending, startTransition] = useTransition();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    startTransition(async () => {
-      const result = await createMember(formData);
-      if (result.success) {
-        toast.success("সদস্য সফলভাবে যোগ হয়েছে!");
-        setOpen(false);
-        onDone();
-      } else {
-        toast.error("তথ্য যাচাইকরণ ব্যর্থ হয়েছে।");
-      }
-    });
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="bg-rose-600 hover:bg-rose-700 text-white rounded-xl">
-          <UserPlus className="w-4 h-4 mr-2" /> নতুন সদস্য যোগ করুন
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl">
-        <DialogHeader>
-          <DialogTitle>নতুন সদস্য যোগ করুন</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3 mt-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                বাংলা নাম *
-              </label>
-              <Input
-                name="banglaFullName"
-                required
-                className="rounded-lg text-sm"
-                placeholder="মো: রফিকুল ইসলাম"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                ইংরেজি নাম *
-              </label>
-              <Input
-                name="engFullName"
-                required
-                className="rounded-lg text-sm"
-                placeholder="Md. Rafiqul Islam"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                ডাকনাম *
-              </label>
-              <Input
-                name="nickName"
-                required
-                className="rounded-lg text-sm"
-                placeholder="রফিক"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                স্কুলের নাম *
-              </label>
-              <Input
-                name="schoolName"
-                required
-                className="rounded-lg text-sm"
-                placeholder="ঢাকা কলেজিয়েট স্কুল"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                লিঙ্গ *
-              </label>
-              <Select name="gender" defaultValue="পুরুষ">
-                <SelectTrigger className="rounded-lg text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {GENDER_OPTIONS.map((g) => (
-                    <SelectItem key={g} value={g}>
-                      {g}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                রক্তের গ্রুপ *
-              </label>
-              <Select name="bloodGroup" defaultValue="O+">
-                <SelectTrigger className="rounded-lg text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {BLOOD_GROUPS.map((bg) => (
-                    <SelectItem key={bg} value={bg}>
-                      {bg}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                বৈবাহিক অবস্থা *
-              </label>
-              <Select name="maritalStatus" defaultValue="বিবাহিত">
-                <SelectTrigger className="rounded-lg text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {MARITAL_OPTIONS.map((m) => (
-                    <SelectItem key={m} value={m}>
-                      {m}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                সন্তানের সংখ্যা
-              </label>
-              <Input
-                name="childrenCount"
-                type="number"
-                min="0"
-                defaultValue="0"
-                className="rounded-lg text-sm"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="text-xs text-slate-500 mb-1 block">
-                পেশা *
-              </label>
-              <Input
-                name="profession"
-                required
-                className="rounded-lg text-sm"
-                placeholder="সরকারি চাকুরিজীবী, ব্যবসায়ী..."
-              />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                বর্তমান ঠিকানা *
-              </label>
-              <Input
-                name="currentAddress"
-                required
-                className="rounded-lg text-sm"
-                placeholder="ঢাকা, বাংলাদেশ"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                স্থায়ী ঠিকানা *
-              </label>
-              <Input
-                name="permanentAddress"
-                required
-                className="rounded-lg text-sm"
-                placeholder="নেত্রকোনা, ময়মনসিংহ"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                মোবাইল *
-              </label>
-              <Input
-                name="personalMobile"
-                required
-                className="rounded-lg text-sm"
-                placeholder="01712345678"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                বিকল্প মোবাইল *
-              </label>
-              <Input
-                name="altMobile"
-                required
-                className="rounded-lg text-sm"
-                placeholder="01812345678"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="text-xs text-slate-500 mb-1 block">
-                প্রোফাইল ছবির URL
-              </label>
-              <Input
-                name="profilePicture"
-                className="rounded-lg text-sm"
-                placeholder="https://..."
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="text-xs text-slate-500 mb-1 block">
-                স্কুলের ছবির URL (১৯৯০ সাল)
-              </label>
-              <Input
-                name="thenPhoto"
-                className="rounded-lg text-sm"
-                placeholder="https://..."
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="text-xs text-slate-500 mb-1 block">
-                স্মৃতিচারণ / আত্মকথা
-              </label>
-              <textarea
-                name="aboutMe"
-                rows={3}
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-rose-400"
-                placeholder="স্কুল জীবনের স্মৃতি..."
-              />
-            </div>
-          </div>
-          <Button
-            type="submit"
-            disabled={pending}
-            className="w-full bg-rose-600 hover:bg-rose-700 text-white rounded-xl"
-          >
-            {pending ? "সংরক্ষণ হচ্ছে..." : "সদস্য যোগ করুন"}
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
 }
 
 export default function AdminMembersClient({
@@ -369,7 +108,7 @@ export default function AdminMembersClient({
           />
         </div>
         <div className="flex gap-2">
-          <MemberFormDialog onDone={() => router.refresh()} />
+          <CreateMemberDialog onDone={() => router.refresh()} />
           <label className="cursor-pointer">
             <Button
               variant="outline"
