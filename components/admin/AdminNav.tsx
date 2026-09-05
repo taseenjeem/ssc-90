@@ -43,27 +43,28 @@ export default function AdminNav({ title, subtitle }: AdminNavProps) {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-white font-bold text-base leading-none">এসএসসি ব্যাচ ৯০</span>
-                  <span className="text-[10px] bg-rose-500/20 text-rose-300 font-semibold px-2 py-0.5 rounded-full border border-rose-500/30">
+                  <span className="text-white font-bold text-sm sm:text-base leading-none">এসএসসি ব্যাচ ৯০</span>
+                  <span className="hidden sm:inline text-[10px] bg-rose-500/20 text-rose-300 font-semibold px-2 py-0.5 rounded-full border border-rose-500/30">
                     অ্যাডমিন প্যানেল
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5">ম্যানেজমেন্ট কন্ট্রোল সেন্টার</p>
+                <p className="hidden sm:block text-[11px] text-slate-400 mt-0.5">ম্যানেজমেন্ট কন্ট্রোল সেন্টার</p>
               </div>
             </Link>
           </div>
 
           {/* Right actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button
               asChild
               variant="ghost"
               size="sm"
-              className="text-slate-300 hover:text-white hover:bg-slate-800 text-xs font-medium rounded-xl h-9"
+              className="text-slate-300 hover:text-white hover:bg-slate-800 text-xs font-medium rounded-xl h-9 px-2 sm:px-3"
             >
               <Link href="/" target="_blank">
-                <ExternalLink className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                ওয়েবসাইট দেখুন
+                <ExternalLink className="w-3.5 h-3.5 sm:mr-1.5 text-slate-400" />
+                <span className="hidden sm:inline">ওয়েবসাইট দেখুন</span>
+                <span className="sm:hidden">সাইট</span>
               </Link>
             </Button>
             <AdminLogoutButton />

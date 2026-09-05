@@ -30,7 +30,7 @@ export default function Navbar() {
             <div className="bg-gradient-to-br from-rose-500 to-red-600 p-2 rounded-xl shadow-md group-hover:shadow-rose-300 transition-all duration-300">
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            <div className="hidden sm:flex flex-col leading-tight">
+            <div className="flex flex-col leading-tight">
               <span className="text-sm font-bold text-rose-700">এসএসসি ব্যাচ ৯০</span>
               <span className="text-[10px] text-slate-500 font-medium">SSC Batch 1990</span>
             </div>
