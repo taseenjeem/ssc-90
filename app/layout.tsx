@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import RouteProgress from "@/components/layout/RouteProgress";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 
 const hindSiliguri = Hind_Siliguri({
   subsets: ["bengali"],
@@ -32,9 +35,13 @@ export default function RootLayout({
   return (
     <html lang="bn" className={hindSiliguri.variable} suppressHydrationWarning>
       <body className="font-sans antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-rose-100 selection:text-rose-900" suppressHydrationWarning>
+        <Suspense fallback={null}>
+          <RouteProgress />
+        </Suspense>
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <ScrollToTop />
         <Toaster position="top-right" richColors />
       </body>
     </html>
