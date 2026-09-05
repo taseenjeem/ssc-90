@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Profile } from "@prisma/client";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { User, ZoomIn } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { User, ZoomIn, X } from "lucide-react";
 
 interface AvatarZoomDialogProps {
   member: Profile;
@@ -35,9 +35,12 @@ export default function AvatarZoomDialog({ member }: AvatarZoomDialogProps) {
           </div>
         }
       />
-      <DialogContent className="max-w-md p-2 bg-black border-0">
+      <DialogContent className="w-[92vw] sm:max-w-md p-3 bg-slate-950/95 backdrop-blur-md border border-slate-800 rounded-3xl shadow-2xl text-white">
+        <DialogTitle className="sr-only">
+          {member.banglaFullName} - প্রোফাইল ছবি
+        </DialogTitle>
         {member.profilePicture ? (
-          <div className="relative aspect-square rounded-lg overflow-hidden">
+          <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-black/40">
             <Image
               src={member.profilePicture}
               alt={member.banglaFullName}
@@ -46,12 +49,18 @@ export default function AvatarZoomDialog({ member }: AvatarZoomDialogProps) {
             />
           </div>
         ) : (
-          <div className="aspect-square flex items-center justify-center bg-slate-900 rounded-lg">
+          <div className="aspect-square flex items-center justify-center bg-slate-900 rounded-2xl">
             <User className="w-24 h-24 text-slate-600" />
           </div>
         )}
-        <p className="text-center text-white text-sm pb-2">{member.banglaFullName}</p>
+        <div className="text-center pt-2 pb-1">
+          <p className="font-bold text-white text-base">{member.banglaFullName}</p>
+          {member.nickName && (
+            <p className="text-xs text-rose-300 font-medium">({member.nickName})</p>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
 }
+

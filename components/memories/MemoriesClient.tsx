@@ -12,8 +12,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { toast } from "sonner";
-import { PenLine, School, User, MessageSquare, Send, Clock, CheckCircle } from "lucide-react";
+import { PenLine, School, User, MessageSquare, Send, Clock, Sparkles, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 
@@ -24,6 +32,7 @@ interface MemoriesClientProps {
 }
 
 export default function MemoriesClient({ messages }: MemoriesClientProps) {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const [open, setOpen] = useState(false);
   const [state, formAction, pending] = useActionState(submitMemory, initialState);
 
@@ -36,78 +45,117 @@ export default function MemoriesClient({ messages }: MemoriesClientProps) {
     }
   }, [state]);
 
+  const formBody = (
+    <form action={formAction} className="space-y-4">
+      <div>
+        <label className="text-xs sm:text-sm font-semibold text-slate-700 flex items-center gap-1.5 mb-1.5">
+          <User className="w-4 h-4 text-amber-600" /> আপনার নাম *
+        </label>
+        <Input
+          name="senderName"
+          placeholder="আপনার পূর্ণ নাম লিখুন"
+          className="rounded-xl border-slate-200 text-base sm:text-sm h-11"
+          required
+        />
+        {state.errors?.senderName && (
+          <p className="text-xs text-red-500 mt-1">{state.errors.senderName[0]}</p>
+        )}
+      </div>
+
+      <div>
+        <label className="text-xs sm:text-sm font-semibold text-slate-700 flex items-center gap-1.5 mb-1.5">
+          <School className="w-4 h-4 text-amber-600" /> স্কুলের নাম (ঐচ্ছিক)
+        </label>
+        <Input
+          name="schoolName"
+          placeholder="যেমন: ঢাকা কলেজিয়েট স্কুল"
+          className="rounded-xl border-slate-200 text-base sm:text-sm h-11"
+        />
+      </div>
+
+      <div>
+        <label className="text-xs sm:text-sm font-semibold text-slate-700 flex items-center gap-1.5 mb-1.5">
+          <MessageSquare className="w-4 h-4 text-amber-600" /> আপনার বার্তা বা স্মৃতি *
+        </label>
+        <textarea
+          name="message"
+          placeholder="স্কুল জীবনের কোনো মধুর স্মৃতি, বন্ধুদের সাথে আড্ডা বা বন্ধুদের উদ্দেশ্যে যেকোনো বার্তা লিখুন..."
+          rows={5}
+          className="w-full rounded-xl border border-slate-200 p-3 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none leading-relaxed"
+          required
+        />
+        {state.errors?.message && (
+          <p className="text-xs text-red-500 mt-1">{state.errors.message[0]}</p>
+        )}
+      </div>
+
+      <div className="pt-2">
+        <Button
+          type="submit"
+          disabled={pending}
+          className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-xl font-bold h-11 shadow-md shadow-amber-200/50 transition-all active:scale-[0.98]"
+        >
+          <Send className="w-4 h-4 mr-2" />
+          {pending ? "পাঠানো হচ্ছে..." : "স্মৃতিবার্তা পাঠান"}
+        </Button>
+      </div>
+
+      <p className="text-xs text-slate-400 text-center flex items-center justify-center gap-1">
+        <Sparkles className="w-3 h-3 text-amber-500" />
+        অ্যাডমিনের অনুমোদনের পর স্মৃতিটি দেয়ালে প্রকাশিত হবে।
+      </p>
+    </form>
+  );
+
+  const headerContent = (
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 shrink-0">
+        <Heart className="w-5 h-5 fill-amber-500/30 text-amber-600" />
+      </div>
+      <div>
+        <h2 className="text-lg font-bold text-slate-900 leading-tight">স্মৃতিবার্তা লিখুন</h2>
+        <p className="text-xs text-slate-500">স্কুল জীবনের অনুভূতি ও স্মৃতি বন্ধুদের সাথে শেয়ার করুন</p>
+      </div>
+    </div>
+  );
+
+  const triggerButton = (
+    <Button
+      size="lg"
+      className="bg-amber-600 hover:bg-amber-700 text-white rounded-2xl shadow-lg shadow-amber-200 px-6 font-semibold"
+    >
+      <PenLine className="w-4 h-4 mr-2" />
+      স্মৃতি লিখুন
+    </Button>
+  );
+
   return (
     <>
       {/* FAB / Submit button */}
       <div className="flex justify-end mb-8">
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button
-              size="lg"
-              className="bg-amber-600 hover:bg-amber-700 text-white rounded-2xl shadow-lg shadow-amber-200 px-6 font-semibold"
-            >
-              <PenLine className="w-4 h-4 mr-2" />
-              স্মৃতি লিখুন
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-lg">স্মৃতিবার্তা লিখুন</DialogTitle>
-            </DialogHeader>
-            <form action={formAction} className="space-y-4 mt-2">
-              <div>
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-2 mb-1.5">
-                  <User className="w-3.5 h-3.5" /> আপনার নাম *
-                </label>
-                <Input
-                  name="senderName"
-                  placeholder="আপনার পূর্ণ নাম লিখুন"
-                  className="rounded-xl border-slate-200"
-                  required
-                />
-                {state.errors?.senderName && (
-                  <p className="text-xs text-red-500 mt-1">{state.errors.senderName[0]}</p>
-                )}
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-2 mb-1.5">
-                  <School className="w-3.5 h-3.5" /> স্কুলের নাম (ঐচ্ছিক)
-                </label>
-                <Input
-                  name="schoolName"
-                  placeholder="আপনার স্কুলের নাম"
-                  className="rounded-xl border-slate-200"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-2 mb-1.5">
-                  <MessageSquare className="w-3.5 h-3.5" /> বার্তা *
-                </label>
-                <textarea
-                  name="message"
-                  placeholder="আপনার স্মৃতি, অনুভূতি বা বন্ধুদের উদ্দেশ্যে বার্তা লিখুন..."
-                  rows={5}
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent resize-none"
-                  required
-                />
-                {state.errors?.message && (
-                  <p className="text-xs text-red-500 mt-1">{state.errors.message[0]}</p>
-                )}
-              </div>
-              <Button
-                type="submit"
-                disabled={pending}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-semibold"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                {pending ? "পাঠানো হচ্ছে..." : "বার্তা পাঠান"}
-              </Button>
-              <p className="text-xs text-slate-400 text-center">
-                অ্যাডমিনের অনুমোদনের পর বার্তাটি প্রদর্শিত হবে।
-              </p>
-            </form>
-          </DialogContent>
-        </Dialog>
+        {isDesktop ? (
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+            <DialogContent className="w-[96vw] sm:max-w-lg p-0 overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-2xl">
+              <DialogHeader className="px-6 py-4 border-b border-slate-100 bg-slate-50/80">
+                <DialogTitle className="sr-only">স্মৃতিবার্তা লিখুন</DialogTitle>
+                {headerContent}
+              </DialogHeader>
+              <div className="p-6">{formBody}</div>
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+            <DrawerContent className="max-h-[92vh] flex flex-col p-0 rounded-t-3xl bg-white">
+              <DrawerHeader className="px-5 pt-3 pb-3 border-b border-slate-100 text-left">
+                <DrawerTitle className="sr-only">স্মৃতিবার্তা লিখুন</DrawerTitle>
+                {headerContent}
+              </DrawerHeader>
+              <div className="p-5 overflow-y-auto">{formBody}</div>
+            </DrawerContent>
+          </Drawer>
+        )}
       </div>
 
       {/* Messages Grid */}

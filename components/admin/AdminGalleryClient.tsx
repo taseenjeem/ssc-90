@@ -13,6 +13,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -48,6 +56,7 @@ type FormState = {
 };
 
 export default function AdminGalleryClient({ items }: { items: GalleryItem[] }) {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const [files, setFiles] = useState<FileEntry[]>([]);
@@ -195,175 +204,208 @@ export default function AdminGalleryClient({ items }: { items: GalleryItem[] }) 
   const pendingCount = files.filter((f) => f.status === "pending").length;
   const doneCount = files.filter((f) => f.status === "done").length;
 
+  const uploadTrigger = (
+    <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm">
+      <Plus className="w-4 h-4 mr-2" /> ছবি যোগ করুন
+    </Button>
+  );
+
+  const uploadHeaderContent = (
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700 shrink-0">
+        <ImageIcon className="w-5 h-5 text-blue-600" />
+      </div>
+      <div>
+        <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">গ্যালারিতে ছবি যোগ করুন</h2>
+        <p className="text-xs text-slate-500">একসাথে একাধিক স্মৃতি ও ছবি আপলোড করতে পারবেন</p>
+      </div>
+    </div>
+  );
+
+  const uploadFormBody = (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* ── Drop zone ─────────────────────────────────────────── */}
+      <div
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={handleDrop}
+        onClick={() => inputRef.current?.click()}
+        className="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/40 transition-colors"
+      >
+        <UploadCloud className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+        <p className="text-sm text-slate-700 font-semibold">
+          এখানে ছবি টেনে আনুন অথবা ক্লিক করে বাছাই করুন
+        </p>
+        <p className="text-xs text-slate-400 mt-1">
+          JPG · JPEG · PNG · WebP · HEIC — সর্বোচ্চ 10 MB প্রতিটি — একসাথে একাধিক বেছে নিন
+        </p>
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp,.heic,image/jpg,image/jpeg,image/png,image/webp,image/heic"
+          multiple
+          className="hidden"
+          onChange={handleFileChange}
+        />
+      </div>
+
+      {/* ── File preview grid ─────────────────────────────────── */}
+      {files.length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span>{files.length}টি ছবি নির্বাচিত</span>
+            {doneCount > 0 && <span className="text-green-600 font-medium">{doneCount}টি আপলোড সম্পন্ন</span>}
+          </div>
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-52 overflow-y-auto pr-1">
+            {files.map((entry, i) => (
+              <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 group border border-slate-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={entry.preview} alt="" className="w-full h-full object-cover" />
+                {/* status overlay */}
+                {entry.status === "uploading" && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+                {entry.status === "done" && (
+                  <div className="absolute inset-0 bg-green-600/40 flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-white" />
+                  </div>
+                )}
+                {entry.status === "error" && (
+                  <div className="absolute inset-0 bg-red-600/60 flex items-center justify-center">
+                    <X className="w-5 h-5 text-white" />
+                  </div>
+                )}
+                {/* remove button */}
+                {entry.status === "pending" && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); removeFile(i); }}
+                    className="absolute top-1 right-1 bg-black/70 hover:bg-black text-white rounded-full p-1 opacity-90 transition-opacity"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            ))}
+            {/* Add more button */}
+            <div
+              onClick={() => inputRef.current?.click()}
+              className="aspect-square rounded-xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-colors"
+            >
+              <Plus className="w-5 h-5 text-slate-400" />
+              <span className="text-[11px] text-slate-500 font-medium mt-0.5">আরও</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Metadata ──────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+        <div className="sm:col-span-2">
+          <label className="text-xs font-semibold text-slate-600 mb-1 block">শিরোনাম *</label>
+          <Input
+            required
+            value={form.title}
+            onChange={(e) => setForm((s) => ({ ...s, title: e.target.value }))}
+            className="rounded-xl text-base sm:text-sm h-11"
+            placeholder="যেমন: পুনর্মিলনী ২০২৪"
+          />
+          {files.length > 1 && (
+            <p className="text-[11px] text-slate-400 mt-1">
+              একাধিক ছবির ক্ষেত্রে শিরোনামে স্বয়ংক্রিয়ভাবে (1), (2)… যোগ হবে
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-slate-600 mb-1 block">ক্যাটাগরি *</label>
+          <Select value={form.category} onValueChange={(v) => setForm((s) => ({ ...s, category: v ?? s.category }))}>
+            <SelectTrigger className="rounded-xl text-base sm:text-sm h-11"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-slate-600 mb-1 block">তারিখ</label>
+          <Input
+            value={form.eventDate}
+            onChange={(e) => setForm((s) => ({ ...s, eventDate: e.target.value }))}
+            className="rounded-xl text-base sm:text-sm h-11"
+            placeholder="যেমন: ১৫ জানুয়ারি, ২০২৪"
+          />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className="text-xs font-semibold text-slate-600 mb-1 block">বিবরণ</label>
+          <textarea
+            rows={2}
+            value={form.description}
+            onChange={(e) => setForm((s) => ({ ...s, description: e.target.value }))}
+            className="w-full rounded-xl border border-slate-200 p-3 text-base sm:text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="ছবির বিস্তারিত বা স্মৃতি..."
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
+        <input
+          type="checkbox"
+          id="featured"
+          checked={form.featured}
+          onChange={(e) => setForm((s) => ({ ...s, featured: e.target.checked }))}
+          className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
+        />
+        <label htmlFor="featured" className="text-sm font-medium text-slate-700 cursor-pointer">
+          হোমপেজে হাইলাইট / ফিচারড হিসেবে দেখান
+        </label>
+      </div>
+
+      <div className="pt-2">
+        <Button
+          type="submit"
+          disabled={saving || files.length === 0}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold h-11 shadow-md shadow-blue-200 transition-all active:scale-[0.98]"
+        >
+          {saving
+            ? `আপলোড হচ্ছে… (${doneCount}/${files.length})`
+            : files.length > 0
+            ? `${files.length}টি ছবি আপলোড করুন`
+            : "ছবি আপলোড করুন"}
+        </Button>
+      </div>
+    </form>
+  );
+
   return (
     <>
       {/* Header row */}
       <div className="flex justify-end mb-6">
-        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setFiles([]); } }}>
-          <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
-              <Plus className="w-4 h-4 mr-2" /> ছবি যোগ করুন
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>ছবি আপলোড করুন</DialogTitle>
-            </DialogHeader>
-
-            <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-              {/* ── Drop zone ─────────────────────────────────────────── */}
-              <div
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={handleDrop}
-                onClick={() => inputRef.current?.click()}
-                className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/40 transition-colors"
-              >
-                <UploadCloud className="w-8 h-8 mx-auto mb-2 text-slate-400" />
-                <p className="text-sm text-slate-600 font-medium">
-                  এখানে ছবি টেনে আনুন অথবা ক্লিক করুন
-                </p>
-                <p className="text-xs text-slate-400 mt-1">
-                  JPG · JPEG · PNG · WebP · HEIC — সর্বোচ্চ 2 MB প্রতিটি — একসাথে অনেকগুলো বেছে নিন
-                </p>
-                <input
-                  ref={inputRef}
-                  type="file"
-                  accept=".jpg,.jpeg,.png,.webp,.heic,image/jpg,image/jpeg,image/png,image/webp,image/heic"
-                  multiple
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </div>
-
-              {/* ── File preview grid ─────────────────────────────────── */}
-              {files.length > 0 && (
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-52 overflow-y-auto pr-1">
-                  {files.map((entry, i) => (
-                    <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-slate-100 group">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={entry.preview} alt="" className="w-full h-full object-cover" />
-                      {/* status overlay */}
-                      {entry.status === "uploading" && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        </div>
-                      )}
-                      {entry.status === "done" && (
-                        <div className="absolute inset-0 bg-green-600/40 flex items-center justify-center">
-                          <CheckCircle2 className="w-5 h-5 text-white" />
-                        </div>
-                      )}
-                      {entry.status === "error" && (
-                        <div className="absolute inset-0 bg-red-600/60 flex items-center justify-center">
-                          <X className="w-5 h-5 text-white" />
-                        </div>
-                      )}
-                      {/* remove button */}
-                      {entry.status === "pending" && (
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); removeFile(i); }}
-                          className="absolute top-0.5 right-0.5 bg-black/60 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-3 h-3 text-white" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  {/* Add more button */}
-                  <div
-                    onClick={() => inputRef.current?.click()}
-                    className="aspect-square rounded-lg border-2 border-dashed border-slate-300 flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-colors"
-                  >
-                    <Plus className="w-5 h-5 text-slate-400" />
-                    <span className="text-[10px] text-slate-400 mt-0.5">আরও</span>
-                  </div>
-                </div>
-              )}
-
-              {files.length > 0 && (
-                <p className="text-xs text-slate-500">
-                  {files.length}টি ছবি বাছাই করা হয়েছে
-                  {doneCount > 0 && ` · ${doneCount}টি আপলোড সম্পন্ন`}
-                </p>
-              )}
-
-              {/* ── Metadata ──────────────────────────────────────────── */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-500 mb-1 block">শিরোনাম *</label>
-                  <Input
-                    required
-                    value={form.title}
-                    onChange={(e) => setForm((s) => ({ ...s, title: e.target.value }))}
-                    className="rounded-lg text-sm"
-                    placeholder="পুনর্মিলনী ২০২৪"
-                  />
-                  {files.length > 1 && (
-                    <p className="text-[10px] text-slate-400 mt-0.5">
-                      একাধিক ছবির ক্ষেত্রে শিরোনামে স্বয়ংক্রিয়ভাবে (1), (2)… যোগ হবে
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="text-xs text-slate-500 mb-1 block">ক্যাটাগরি *</label>
-                  <Select value={form.category} onValueChange={(v) => setForm((s) => ({ ...s, category: v ?? s.category }))}>
-                    <SelectTrigger className="rounded-lg text-sm"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="text-xs text-slate-500 mb-1 block">তারিখ</label>
-                  <Input
-                    value={form.eventDate}
-                    onChange={(e) => setForm((s) => ({ ...s, eventDate: e.target.value }))}
-                    className="rounded-lg text-sm"
-                    placeholder="১৫ জানুয়ারি, ২০২৪"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="text-xs text-slate-500 mb-1 block">বিবরণ</label>
-                  <textarea
-                    rows={2}
-                    value={form.description}
-                    onChange={(e) => setForm((s) => ({ ...s, description: e.target.value }))}
-                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    placeholder="ছবির বিবরণ..."
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  checked={form.featured}
-                  onChange={(e) => setForm((s) => ({ ...s, featured: e.target.checked }))}
-                  className="rounded"
-                />
-                <label htmlFor="featured" className="text-sm text-slate-600">হোমপেজে হাইলাইট করুন</label>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={saving || files.length === 0}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
-              >
-                {saving
-                  ? `আপলোড হচ্ছে… (${doneCount}/${files.length})`
-                  : files.length > 0
-                  ? `${files.length}টি ছবি আপলোড করুন`
-                  : "ছবি আপলোড করুন"}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+        {isDesktop ? (
+          <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setFiles([]); } }}>
+            <DialogTrigger asChild>{uploadTrigger}</DialogTrigger>
+            <DialogContent className="w-[96vw] sm:max-w-2xl md:max-w-3xl max-h-[92vh] flex flex-col p-0 overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-2xl">
+              <DialogHeader className="px-6 py-4 border-b border-slate-100 bg-slate-50/80 shrink-0">
+                <DialogTitle className="sr-only">ছবি আপলোড করুন</DialogTitle>
+                {uploadHeaderContent}
+              </DialogHeader>
+              <div className="p-6 overflow-y-auto">{uploadFormBody}</div>
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <Drawer open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setFiles([]); } }}>
+            <DrawerTrigger asChild>{uploadTrigger}</DrawerTrigger>
+            <DrawerContent className="max-h-[92vh] flex flex-col p-0 rounded-t-3xl bg-white">
+              <DrawerHeader className="px-5 pt-3 pb-3 border-b border-slate-100 text-left shrink-0">
+                <DrawerTitle className="sr-only">ছবি আপলোড করুন</DrawerTitle>
+                {uploadHeaderContent}
+              </DrawerHeader>
+              <div className="p-5 overflow-y-auto">{uploadFormBody}</div>
+            </DrawerContent>
+          </Drawer>
+        )}
       </div>
 
       {/* ── Gallery grid ──────────────────────────────────────────────── */}
