@@ -69,13 +69,22 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-500">
+        <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <p>
             © ২০২৬ এসএসসি ব্যাচ ৯০ অ্যালামনাই। সর্বস্বত্ব সংরক্ষিত।
           </p>
-          <p className="text-xs text-slate-500 flex items-center gap-1">
-            তৈরি করা হয়েছে <Heart className="w-3 h-3 text-rose-500" /> দিয়ে বন্ধুদের জন্য
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="flex items-center gap-1">
+              তৈরি করা হয়েছে <Heart className="w-3 h-3 text-rose-500" /> দিয়ে বন্ধুদের জন্য
+            </p>
+            <span className="text-slate-700">·</span>
+            <Link
+              href="/admin/login"
+              className="text-slate-500 hover:text-rose-400 transition-colors flex items-center gap-1"
+            >
+              অ্যাডমিন পোর্টাল
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import MemberIdCard from "@/components/members/MemberIdCard";
 import ThenNowSlider from "@/components/members/ThenNowSlider";
@@ -15,7 +17,9 @@ import {
   Heart,
   Users,
   User,
-  AlertTriangle,
+  ArrowLeft,
+  PhoneCall,
+  MessageCircle,
 } from "lucide-react";
 
 export const revalidate = 3600;
@@ -48,7 +52,17 @@ export default async function MemberProfilePage({
   return (
     <div className="min-h-screen bg-slate-50 pb-16">
       {/* Header Banner */}
-      <div className="bg-gradient-to-br from-slate-900 to-rose-950 py-16" />
+      <div className="bg-gradient-to-br from-slate-900 via-rose-950 to-slate-900 py-12 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <Link
+            href="/members"
+            className="inline-flex items-center gap-2 text-rose-200 hover:text-white transition-colors text-xs font-semibold bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-xl backdrop-blur-sm shadow-xs"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            সকল সদস্যের ডিরেক্টরি
+          </Link>
+        </div>
+      </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20">
         {/* Main Card */}
@@ -82,6 +96,33 @@ export default async function MemberProfilePage({
                   <Briefcase className="w-4 h-4 text-rose-400" />
                   <span className="text-sm text-slate-600">{member.profession}</span>
                 </div>
+
+                {/* Quick actions */}
+                {member.personalMobile && (
+                  <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-slate-100">
+                    <Button
+                      asChild
+                      size="sm"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold h-9 px-4 shadow-sm"
+                    >
+                      <a href={`tel:${member.personalMobile}`}>
+                        <PhoneCall className="w-3.5 h-3.5 mr-1.5" />
+                        কল করুন
+                      </a>
+                    </Button>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-semibold h-9 px-4"
+                    >
+                      <a href={`sms:${member.personalMobile}`}>
+                        <MessageCircle className="w-3.5 h-3.5 mr-1.5 text-rose-600" />
+                        বার্তা পাঠান
+                      </a>
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
 

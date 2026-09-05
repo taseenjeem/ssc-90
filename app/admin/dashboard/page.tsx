@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Images, HandHeart, MessageSquare, UserPlus, Upload, Plus, LogOut } from "lucide-react";
-import AdminLogoutButton from "@/components/admin/AdminLogoutButton";
+import AdminNav from "@/components/admin/AdminNav";
 
 export const revalidate = 60;
 
@@ -35,21 +35,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Admin Header */}
-      <div className="bg-slate-900 border-b border-slate-800 py-4 px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-white font-bold text-lg">অ্যাডমিন ড্যাশবোর্ড</h1>
-            <p className="text-slate-400 text-sm">এসএসসি ব্যাচ ৯০ ম্যানেজমেন্ট প্যানেল</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button asChild variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800">
-              <Link href="/">সাইট দেখুন</Link>
-            </Button>
-            <AdminLogoutButton />
-          </div>
-        </div>
-      </div>
+      <AdminNav title="ওভারভিউ" subtitle="প্রধান পরিসংখ্যান" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Stats */}

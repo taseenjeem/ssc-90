@@ -7,6 +7,10 @@ import {
   HandHeart,
   BookOpen,
   Heart,
+  MessageSquare,
+  Droplets,
+  Quote,
+  Sparkles,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,6 +46,14 @@ async function getRecentInitiatives() {
   });
 }
 
+async function getRecentMemories() {
+  return prisma.memoryMessage.findMany({
+    where: { isApproved: true },
+    orderBy: { createdAt: "desc" },
+    take: 3,
+  });
+}
+
 const metrics = [
   {
     iconType: "users" as const,
@@ -70,10 +82,11 @@ const metrics = [
 ];
 
 export default async function HomePage() {
-  const [stats, featured, initiatives] = await Promise.all([
+  const [stats, featured, initiatives, memories] = await Promise.all([
     getStats(),
     getFeaturedGallery(),
     getRecentInitiatives(),
+    getRecentMemories(),
   ]);
 
   return (
@@ -222,6 +235,94 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Memories Wall Highlights */}
+      {memories.length > 0 && (
+        <section className="py-20 bg-gradient-to-b from-amber-50/40 via-white to-amber-50/20 border-t border-amber-100/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <Badge className="bg-amber-100 text-amber-800 border-0 mb-3 font-semibold">
+                  <Sparkles className="w-3 h-3 mr-1 text-amber-600" /> স্মৃতির পাতা থেকে
+                </Badge>
+                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">
+                  বন্ধুদের আবেগ ও অনুভূতি
+                </h2>
+                <p className="text-slate-500 mt-2">
+                  তিন দশক আগের সোনালী দিনের অমলিন স্মৃতি
+                </p>
+              </div>
+              <Link
+                href="/memories"
+                className="hidden sm:flex items-center gap-1 text-amber-700 font-semibold hover:text-amber-800 transition-colors"
+              >
+                সব স্মৃতি দেখুন <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {memories.map((msg) => (
+                <div
+                  key={msg.id}
+                  className="relative bg-white border border-amber-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group"
+                >
+                  <Quote className="w-8 h-8 text-amber-200 group-hover:text-amber-300 transition-colors mb-2" />
+                  <p className="text-slate-700 text-sm leading-relaxed italic mb-6 line-clamp-4">
+                    "{msg.message}"
+                  </p>
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-slate-900 text-sm">{msg.senderName}</p>
+                      {msg.schoolName && (
+                        <p className="text-xs text-slate-400 mt-0.5">{msg.schoolName}</p>
+                      )}
+                    </div>
+                    <span className="text-[11px] text-slate-400">
+                      {new Date(msg.createdAt).toLocaleDateString("bn-BD")}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 text-center sm:hidden">
+              <Button asChild variant="outline" className="border-amber-200 text-amber-800 rounded-xl">
+                <Link href="/memories">সব স্মৃতি দেখুন ও স্মৃতি লিখুন</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Emergency Blood Bank Banner */}
+      <section className="py-12 bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-r from-red-950 via-slate-900 to-rose-950 rounded-3xl p-6 sm:p-10 border border-red-900/40 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0">
+                <Droplets className="w-7 h-7 fill-red-500/30 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white">
+                  জরুরি রক্তের প্রয়োজনে ব্যাচ পরিবার
+                </h3>
+                <p className="text-slate-300 text-sm mt-1">
+                  যে কোনো রক্তের গ্রুপের জন্য বন্ধুদের সাথে যোগাযোগ করুন অথবা রক্তদাতা হিসেবে যুক্ত থাকুন
+                </p>
+              </div>
+            </div>
+            <Button
+              asChild
+              className="bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl px-6 py-3 h-11 shrink-0 shadow-lg shadow-red-900/50 hover:scale-105 transition-all"
+            >
+              <Link href="/blood-bank">
+                <Droplets className="w-4 h-4 mr-1.5" />
+                রক্তদাতা ডিরেক্টরি
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
 
       {/* CTA Banner */}
       <section className="py-20 bg-gradient-to-r from-rose-600 to-red-700">

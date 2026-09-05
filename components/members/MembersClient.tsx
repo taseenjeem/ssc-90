@@ -86,9 +86,23 @@ export default function MembersClient({ members, schools, bloodGroups }: Members
             </SelectContent>
           </Select>
         </div>
-        <p className="text-xs text-slate-400 mt-2">
-          {filtered.length} জন সদস্য পাওয়া গেছে
-        </p>
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 text-xs text-slate-500">
+          <p>
+            <strong className="text-slate-800 font-semibold">{filtered.length}</strong> জন সদস্য পাওয়া গেছে
+          </p>
+          {(query || school !== "all" || bloodGroup !== "all") && (
+            <button
+              onClick={() => {
+                setQuery("");
+                setSchool("all");
+                setBloodGroup("all");
+              }}
+              className="text-rose-600 hover:text-rose-700 font-semibold hover:underline"
+            >
+              ফিল্টার মুছুন
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Member Grid */}
@@ -109,10 +123,22 @@ export default function MembersClient({ members, schools, bloodGroups }: Members
           </AnimatePresence>
         </div>
       ) : (
-        <div className="text-center py-20 text-slate-400">
-          <Search className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-          <p className="text-lg font-medium">কোনো সদস্য পাওয়া যায়নি</p>
-          <p className="text-sm mt-1">অনুসন্ধানের শর্ত পরিবর্তন করে আবার চেষ্টা করুন</p>
+        <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200 text-slate-400">
+          <Search className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+          <p className="text-base font-semibold text-slate-700">কোনো সদস্য পাওয়া যায়নি</p>
+          <p className="text-xs text-slate-400 mt-1">অনুসন্ধানের ফিল্টার বা বানান পরিবর্তন করে আবার চেষ্টা করুন।</p>
+          {(query || school !== "all" || bloodGroup !== "all") && (
+            <button
+              onClick={() => {
+                setQuery("");
+                setSchool("all");
+                setBloodGroup("all");
+              }}
+              className="mt-4 px-4 py-2 bg-rose-50 text-rose-700 text-xs font-semibold rounded-xl hover:bg-rose-100 transition-colors"
+            >
+              সকল সদস্য দেখান
+            </button>
+          )}
         </div>
       )}
     </>
