@@ -41,28 +41,32 @@ export default async function MemberProfilePage({
     { label: "রক্তের গ্রুপ", value: member.bloodGroup, icon: Droplets },
     { label: "স্কুলের নাম", value: member.schoolName, icon: School },
     { label: "বৈবাহিক অবস্থা", value: member.maritalStatus, icon: Heart },
-    { label: "সন্তানের সংখ্যা", value: member.childrenCount?.toString() ?? "০", icon: Users },
+    {
+      label: "সন্তানের সংখ্যা",
+      value: member.childrenCount?.toString() ?? "০",
+      icon: Users,
+    },
     { label: "পেশা", value: member.profession, icon: Briefcase },
     { label: "বর্তমান ঠিকানা", value: member.currentAddress, icon: MapPin },
     { label: "স্থায়ী ঠিকানা", value: member.permanentAddress, icon: MapPin },
-    { label: "মোবাইল", value: member.personalMobile, icon: Phone, isPhone: true },
-    { label: "বিকল্প মোবাইল", value: member.altMobile, icon: Phone, isPhone: true },
+    {
+      label: "মোবাইল",
+      value: member.personalMobile,
+      icon: Phone,
+      isPhone: true,
+    },
+    {
+      label: "বিকল্প মোবাইল",
+      value: member.altMobile,
+      icon: Phone,
+      isPhone: true,
+    },
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 pb-16">
       {/* Header Banner */}
-      <div className="bg-gradient-to-br from-slate-900 via-rose-950 to-slate-900 py-12 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <Link
-            href="/members"
-            className="inline-flex items-center gap-2 text-rose-200 hover:text-white transition-colors text-xs font-semibold bg-white/10 hover:bg-white/20 px-3.5 py-1.5 rounded-xl backdrop-blur-sm shadow-xs"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            সকল সদস্যের ডিরেক্টরি
-          </Link>
-        </div>
-      </div>
+      <div className="bg-gradient-to-br from-slate-900 via-rose-950 to-slate-900 py-12 px-4 sm:px-6"></div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20">
         {/* Main Card */}
@@ -80,21 +84,29 @@ export default async function MemberProfilePage({
                     {member.banglaFullName}
                   </h1>
                   {member.isDeceased && (
-                    <Badge className="bg-slate-200 text-slate-600 border-0">প্রয়াত</Badge>
+                    <Badge className="bg-slate-200 text-slate-600 border-0">
+                      প্রয়াত
+                    </Badge>
                   )}
                   <Badge className="bg-rose-100 text-rose-700 border-rose-200 border font-bold">
                     <Droplets className="w-3 h-3 mr-1" />
                     {member.bloodGroup}
                   </Badge>
                 </div>
-                <p className="text-slate-500 mt-1">{member.engFullName} · {member.nickName}</p>
+                <p className="text-slate-500 mt-1">
+                  {member.engFullName} · {member.nickName}
+                </p>
                 <div className="flex items-center gap-2 mt-2">
                   <School className="w-4 h-4 text-rose-400" />
-                  <span className="text-sm text-slate-600">{member.schoolName}</span>
+                  <span className="text-sm text-slate-600">
+                    {member.schoolName}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <Briefcase className="w-4 h-4 text-rose-400" />
-                  <span className="text-sm text-slate-600">{member.profession}</span>
+                  <span className="text-sm text-slate-600">
+                    {member.profession}
+                  </span>
                 </div>
 
                 {/* Quick actions */}
@@ -110,17 +122,6 @@ export default async function MemberProfilePage({
                         কল করুন
                       </a>
                     </Button>
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-semibold h-9 px-4"
-                    >
-                      <a href={`sms:${member.personalMobile}`}>
-                        <MessageCircle className="w-3.5 h-3.5 mr-1.5 text-rose-600" />
-                        বার্তা পাঠান
-                      </a>
-                    </Button>
                   </div>
                 )}
               </div>
@@ -129,7 +130,9 @@ export default async function MemberProfilePage({
             {/* About Me */}
             {member.aboutMe && (
               <div className="mt-6 p-4 bg-rose-50 rounded-xl border border-rose-100">
-                <p className="text-sm text-rose-900 leading-relaxed italic">"{member.aboutMe}"</p>
+                <p className="text-sm text-rose-900 leading-relaxed italic">
+                  "{member.aboutMe}"
+                </p>
               </div>
             )}
           </CardContent>
@@ -140,7 +143,9 @@ export default async function MemberProfilePage({
           <div className="lg:col-span-2 space-y-4">
             <Card className="border-0 shadow-md">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base text-slate-700">ব্যক্তিগত তথ্য</CardTitle>
+                <CardTitle className="text-base text-slate-700">
+                  ব্যক্তিগত তথ্য
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="divide-y divide-slate-50">
@@ -148,7 +153,9 @@ export default async function MemberProfilePage({
                     <div key={f.label} className="flex items-start py-3 gap-3">
                       <f.icon className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-slate-400 mb-0.5">{f.label}</p>
+                        <p className="text-xs text-slate-400 mb-0.5">
+                          {f.label}
+                        </p>
                         {f.isPhone ? (
                           <a
                             href={`tel:${f.value}`}
@@ -157,7 +164,9 @@ export default async function MemberProfilePage({
                             {f.value}
                           </a>
                         ) : (
-                          <p className="text-sm font-medium text-slate-800">{f.value}</p>
+                          <p className="text-sm font-medium text-slate-800">
+                            {f.value}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -173,7 +182,9 @@ export default async function MemberProfilePage({
             {member.thenPhoto && (
               <Card className="border-0 shadow-md overflow-hidden">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base text-slate-700">তখন ও এখন</CardTitle>
+                  <CardTitle className="text-base text-slate-700">
+                    তখন ও এখন
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ThenNowSlider

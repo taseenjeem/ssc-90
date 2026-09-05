@@ -19,7 +19,10 @@ export default function MemberIdCard({ member }: MemberIdCardProps) {
   const handleDownload = async () => {
     if (!cardRef.current) return;
     try {
-      const dataUrl = await toPng(cardRef.current, { quality: 1.0, pixelRatio: 3 });
+      const dataUrl = await toPng(cardRef.current, {
+        quality: 1.0,
+        pixelRatio: 3,
+      });
       const link = document.createElement("a");
       link.href = dataUrl;
       link.download = `SSC90_${member.nickName}.png`;
@@ -33,7 +36,9 @@ export default function MemberIdCard({ member }: MemberIdCardProps) {
   return (
     <Card className="border-0 shadow-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base text-slate-700">ডিজিটাল আইডি কার্ড</CardTitle>
+        <CardTitle className="text-base text-slate-700">
+          ডিজিটাল আইডি কার্ড
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {/* Printable Card */}
@@ -54,7 +59,9 @@ export default function MemberIdCard({ member }: MemberIdCardProps) {
             </div>
             <div>
               <p className="text-white text-xs font-bold">এসএসসি ব্যাচ ৯০</p>
-              <p className="text-yellow-400 text-[10px]">SSC Batch 1990 · Alumni Card</p>
+              <p className="text-yellow-400 text-[10px]">
+                SSC Batch 1990 · Alumni Card
+              </p>
             </div>
           </div>
 
@@ -76,23 +83,35 @@ export default function MemberIdCard({ member }: MemberIdCardProps) {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-bold text-sm line-clamp-2">{member.banglaFullName}</p>
-              <p className="text-slate-400 text-[11px] mt-0.5">{member.engFullName}</p>
+              <p className="text-white font-bold text-sm line-clamp-2">
+                {member.banglaFullName}
+              </p>
+              <p className="text-slate-400 text-[11px] mt-0.5">
+                {member.engFullName}
+              </p>
               <div className="flex items-center gap-1 mt-2">
                 <Droplets className="w-3 h-3 text-rose-400" />
-                <span className="text-rose-300 text-xs font-bold">{member.bloodGroup}</span>
+                <span className="text-rose-300 text-xs font-bold">
+                  {member.bloodGroup}
+                </span>
               </div>
               <div className="flex items-start gap-1 mt-1">
                 <School className="w-3 h-3 text-slate-400 mt-0.5 flex-shrink-0" />
-                <span className="text-slate-300 text-[10px] line-clamp-2">{member.schoolName}</span>
+                <span className="text-slate-300 text-[10px] line-clamp-2">
+                  {member.schoolName}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Footer */}
           <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between relative">
-            <span className="text-[10px] text-slate-500 font-mono">ID: {member.id.slice(0, 8).toUpperCase()}</span>
-            <span className="text-[10px] text-yellow-400 font-bold">SSC 1990</span>
+            <span className="text-[10px] text-slate-500 font-mono">
+              ID: {member.id.slice(0, 8).toUpperCase()}
+            </span>
+            <span className="text-[10px] text-yellow-400 font-bold">
+              SSC 1990
+            </span>
           </div>
         </div>
 
