@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="bn" className={hindSiliguri.variable} suppressHydrationWarning>
-      <body className="font-sans antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-rose-100 selection:text-rose-900" suppressHydrationWarning>
+      <body className="font-sans antialiased text-slate-900 min-h-screen flex flex-col selection:bg-rose-100 selection:text-rose-900" suppressHydrationWarning>
         <Suspense fallback={null}>
           <RouteProgress />
         </Suspense>

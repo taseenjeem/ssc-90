@@ -22,7 +22,7 @@ const BLOOD_COLORS: Record<string, string> = {
 
 export default function MemberCard({ member }: MemberCardProps) {
   return (
-    <div className="group bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col">
+    <div className="group bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl hover:border-rose-300 transition-all duration-300 hover:-translate-y-1 flex flex-col">
       {/* Avatar */}
       <div className="relative h-44 bg-gradient-to-br from-rose-50 to-slate-100 flex items-center justify-center overflow-hidden">
         {member.profilePicture ? (

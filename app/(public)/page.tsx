@@ -176,7 +176,7 @@ export default async function HomePage() {
       </section>
 
       {/* Metrics Section */}
-      <section className="py-16 bg-white border-b border-slate-100">
+      <section className="py-16 bg-white/70 backdrop-blur-md border-y border-slate-200/60 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {metrics.map((m) => (
@@ -194,7 +194,7 @@ export default async function HomePage() {
 
       {/* Featured Gallery */}
       {featured.length > 0 && (
-        <section className="py-20 bg-slate-50">
+        <section className="py-20 border-b border-slate-200/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-10">
               <div>
@@ -222,7 +222,7 @@ export default async function HomePage() {
 
       {/* Recent Initiatives */}
       {initiatives.length > 0 && (
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-white/70 backdrop-blur-md border-b border-slate-200/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-10">
               <div>
@@ -250,7 +250,7 @@ export default async function HomePage() {
 
       {/* Memories Wall Highlights */}
       {memories.length > 0 && (
-        <section className="py-20 bg-gradient-to-b from-amber-50/40 via-white to-amber-50/20 border-t border-amber-100/60">
+        <section className="py-20 bg-gradient-to-b from-amber-50/50 via-white/80 to-amber-50/30 backdrop-blur-sm border-t border-amber-200/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-10">
               <div>

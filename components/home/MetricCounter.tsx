@@ -28,13 +28,13 @@ export default function MetricCounter({ iconType, label, value, color }: MetricC
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col items-center text-center p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition-shadow"
+      className="flex flex-col items-center text-center p-6 rounded-2xl bg-white/85 backdrop-blur-md border border-slate-200/80 hover:shadow-xl hover:border-rose-200 hover:-translate-y-1 transition-all duration-300"
     >
-      <div className="p-3 rounded-xl bg-white shadow-sm mb-3">
+      <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 shadow-xs mb-3">
         <Icon className={`w-7 h-7 ${color}`} />
       </div>
       <p className={`text-4xl font-bold ${color} mb-1`}>{value.toLocaleString("bn-BD")}</p>
-      <p className="text-sm text-slate-500 font-medium">{label}</p>
+      <p className="text-sm text-slate-600 font-medium">{label}</p>
     </motion.div>
   );
 }

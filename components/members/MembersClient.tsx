@@ -35,7 +35,7 @@ export default function MembersClient({ members }: MembersClientProps) {
   return (
     <>
       {/* Search Bar */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 sm:p-5 mb-8">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 mb-8">
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input

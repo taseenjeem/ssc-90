@@ -57,7 +57,7 @@ export default function BloodBankClient({ donors }: { donors: Donor[] }) {
   return (
     <>
       {/* Search & Group Filters Bar */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 mb-8">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-sm p-5 mb-8">
         <div className="relative mb-5">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
@@ -131,7 +131,7 @@ export default function BloodBankClient({ donors }: { donors: Donor[] }) {
           return (
             <div
               key={donor.id}
-              className="flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200"
+              className="flex items-center gap-4 bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-red-200/80 hover:-translate-y-0.5 transition-all duration-300"
             >
               {/* Blood Badge */}
               <div className={cn("w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-inner", colors.bg)}>

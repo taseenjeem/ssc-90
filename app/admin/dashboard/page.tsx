@@ -34,7 +34,7 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen">
       <AdminNav title="ওভারভিউ" subtitle="প্রধান পরিসংখ্যান" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -42,7 +42,7 @@ export default async function AdminDashboardPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {statCards.map((card) => (
             <Link key={card.label} href={card.href}>
-              <Card className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+              <Card className="border border-slate-200/80 bg-white/90 backdrop-blur-md shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer">
                 <CardContent className="p-5">
                   <div className={`w-10 h-10 ${card.bg} rounded-xl flex items-center justify-center mb-3`}>
                     <card.icon className={`w-5 h-5 ${card.color}`} />
