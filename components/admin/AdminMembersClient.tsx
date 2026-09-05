@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import EditMemberDialog from "./EditMemberDialog";
 import CreateMemberDialog from "./CreateMemberDialog";
+import Link from "next/link";
 
 interface AdminMembersClientProps {
   members: Profile[];
@@ -163,9 +164,14 @@ export default function AdminMembersClient({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <p className="font-semibold text-slate-900 text-sm">
-                      {member.banglaFullName}
-                    </p>
+                    <Link
+                      href={`/members/${member.id}`}
+                      className="hover:underline"
+                    >
+                      <p className="font-semibold text-slate-900 text-sm">
+                        {member.banglaFullName}
+                      </p>
+                    </Link>
                     {member.isDeceased && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-medium">
                         প্রয়াত
