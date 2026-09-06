@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { Droplets, MapPin, Phone, Search, Copy, Check, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -143,12 +144,20 @@ export default function BloodBankClient({ donors }: { donors: Donor[] }) {
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-slate-900 text-base leading-tight">
-                  {donor.banglaFullName}
-                  {donor.nickName && (
-                    <span className="text-rose-500 font-normal text-xs sm:text-sm ml-1.5">({donor.nickName})</span>
-                  )}
-                </p>
+                <Link
+                  href={`/members/${donor.id}`}
+                  className="group/name inline-block hover:underline focus:outline-none"
+                  title="প্রোফাইল দেখুন"
+                >
+                  <p className="font-bold text-slate-900 group-hover/name:text-rose-600 transition-colors text-base leading-tight">
+                    {donor.banglaFullName}
+                    {donor.nickName && (
+                      <span className="text-rose-500 font-normal text-xs sm:text-sm ml-1.5">
+                        ({donor.nickName})
+                      </span>
+                    )}
+                  </p>
+                </Link>
                 <div className="flex items-center gap-1 mt-1 text-xs text-slate-500">
                   <MapPin className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
                   <span className="truncate">{donor.currentAddress}</span>
