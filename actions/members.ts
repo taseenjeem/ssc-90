@@ -81,6 +81,8 @@ export async function createMember(formData: FormData) {
   });
 
   revalidatePath("/members");
+  revalidatePath("/in-memoriam");
+  revalidatePath("/blood-bank");
   revalidatePath("/admin/members");
   revalidatePath("/");
   return { success: true, member: created };
@@ -118,6 +120,8 @@ export async function updateMember(id: string, formData: FormData) {
   const updated = await prisma.profile.update({ where: { id }, data: parsed.data });
   revalidatePath("/members");
   revalidatePath(`/members/${id}`);
+  revalidatePath("/in-memoriam");
+  revalidatePath("/blood-bank");
   revalidatePath("/admin/members");
   revalidatePath("/");
   return { success: true, member: updated };
@@ -126,7 +130,10 @@ export async function updateMember(id: string, formData: FormData) {
 export async function deleteMember(id: string) {
   await prisma.profile.delete({ where: { id } });
   revalidatePath("/members");
+  revalidatePath("/in-memoriam");
+  revalidatePath("/blood-bank");
   revalidatePath("/admin/members");
+  revalidatePath("/");
   return { success: true };
 }
 

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Flower2, School, User, Calendar, ArrowRight } from "lucide-react";
 import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export const metadata = {
   title: "শ্রদ্ধাঞ্জলি | এসএসসি ব্যাচ ৯০",

@@ -3,7 +3,7 @@ import MembersClient from "@/components/members/MembersClient";
 import { Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export const metadata = {
   title: "সদস্য ডিরেক্টরি | এসএসসি ব্যাচ ৯০",
@@ -13,7 +13,6 @@ export const metadata = {
 export default async function MembersPage() {
   const members = await prisma.profile.findMany({
     orderBy: { banglaFullName: "asc" },
-    where: { isDeceased: false },
   });
 
   return (
