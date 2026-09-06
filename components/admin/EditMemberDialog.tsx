@@ -357,7 +357,7 @@ export default function EditMemberDialog({
                   লিঙ্গ <span className="text-rose-600">*</span>
                 </label>
                 <Select value={gender} onValueChange={(v) => v && setGender(v)}>
-                  <SelectTrigger className="rounded-xl border-slate-200 text-base sm:text-sm h-10 sm:h-10 focus:ring-rose-500">
+                  <SelectTrigger className="w-full rounded-xl border-slate-200 text-base sm:text-sm h-10 sm:h-10 focus:ring-rose-500">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -373,7 +373,7 @@ export default function EditMemberDialog({
                   রক্তের গ্রুপ <span className="text-rose-600">*</span>
                 </label>
                 <Select value={bloodGroup} onValueChange={(v) => v && setBloodGroup(v)}>
-                  <SelectTrigger className="rounded-xl border-slate-200 text-base sm:text-sm h-10 sm:h-10 focus:ring-rose-500">
+                  <SelectTrigger className="w-full rounded-xl border-slate-200 text-base sm:text-sm h-10 sm:h-10 focus:ring-rose-500">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -466,7 +466,7 @@ export default function EditMemberDialog({
                   বৈবাহিক অবস্থা <span className="text-rose-600">*</span>
                 </label>
                 <Select value={maritalStatus} onValueChange={(v) => v && setMaritalStatus(v)}>
-                  <SelectTrigger className="rounded-xl border-slate-200 text-base sm:text-sm h-10 sm:h-10 focus:ring-rose-500">
+                  <SelectTrigger className="w-full rounded-xl border-slate-200 text-base sm:text-sm h-10 sm:h-10 focus:ring-rose-500">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

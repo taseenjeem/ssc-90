@@ -20,12 +20,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -58,13 +53,17 @@ const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 const GENDER_OPTIONS = ["পুরুষ", "মহিলা"];
 const MARITAL_OPTIONS = ["বিবাহিত", "অবিবাহিত", "অন্যান্য"];
 const BUCKET = process.env.NEXT_PUBLIC_STORAGE_BUCKET_MEMBERS || "members";
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://pzowrpnbbymuvfnwuqhh.supabase.co";
+const SUPABASE_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  "https://pzowrpnbbymuvfnwuqhh.supabase.co";
 
 interface CreateMemberDialogProps {
   onDone: () => void;
 }
 
-export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) {
+export default function CreateMemberDialog({
+  onDone,
+}: CreateMemberDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -119,8 +118,17 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
   // Handle direct file upload for avatar or thenPhoto
   const handleFileUpload = async (file: File, type: "avatar" | "thenPhoto") => {
     if (!file) return;
-    const allowed = ["image/jpeg", "image/png", "image/webp", "image/jpg", "image/heic"];
-    if (!allowed.includes(file.type) && !file.name.toLowerCase().endsWith(".heic")) {
+    const allowed = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/jpg",
+      "image/heic",
+    ];
+    if (
+      !allowed.includes(file.type) &&
+      !file.name.toLowerCase().endsWith(".heic")
+    ) {
       toast.error("শুধুমাত্র ছবি ফাইল (JPG, PNG, WebP) আপলোড করা যাবে।");
       return;
     }
@@ -129,7 +137,8 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
       return;
     }
 
-    const setUploading = type === "avatar" ? setUploadingAvatar : setUploadingThenPhoto;
+    const setUploading =
+      type === "avatar" ? setUploadingAvatar : setUploadingThenPhoto;
     setUploading(true);
 
     try {
@@ -211,7 +220,9 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
       </div>
       <div className="min-w-0 flex-1">
         <h2 className="text-base sm:text-lg font-bold text-slate-900 truncate">
-          {banglaFullName ? `নতুন সদস্য: ${banglaFullName}` : "নতুন সদস্য যোগ করুন"}
+          {banglaFullName
+            ? `নতুন সদস্য: ${banglaFullName}`
+            : "নতুন সদস্য যোগ করুন"}
         </h2>
         <p className="text-xs text-slate-500 mt-0.5 truncate">
           এসএসসি ১৯৯০ ব্যাচের সদস্যের পূর্ণাঙ্গ তথ্য ও ছবি যুক্ত করুন
@@ -222,8 +233,15 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
 
   // Reusable responsive form content with tabs
   const formBody = (
-    <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 overflow-hidden">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col flex-1 overflow-hidden"
+    >
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex flex-col flex-1 overflow-hidden"
+      >
         {/* Tab Navigation */}
         <div className="px-4 sm:px-6 pt-2 pb-2 border-b border-slate-100 bg-slate-50/50 shrink-0 overflow-x-auto scrollbar-none">
           <TabsList className="bg-slate-200/60 p-1 rounded-xl h-auto inline-flex min-w-full sm:min-w-0 sm:w-auto gap-1">
@@ -264,10 +282,16 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
         {/* Scrollable Tab Panels */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 overscroll-contain">
           {/* TAB 1: BASIC INFORMATION */}
-          <TabsContent value="basic" className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none">
+          <TabsContent
+            value="basic"
+            className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none"
+          >
             <div className="bg-rose-50/60 border border-rose-100 rounded-xl p-3 flex items-start gap-2 text-rose-900 text-xs">
               <Info className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-              <span>সদস্যের নাম, ডাকনাম, স্কুলের নাম ও রক্তের গ্রুপ লিখুন। তারকা (*) চিহ্নিত ঘরগুলো আবশ্যক।</span>
+              <span>
+                সদস্যের নাম, ডাকনাম, স্কুলের নাম ও রক্তের গ্রুপ লিখুন। তারকা (*)
+                চিহ্নিত ঘরগুলো আবশ্যক।
+              </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
@@ -331,12 +355,14 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
                   লিঙ্গ <span className="text-rose-600">*</span>
                 </label>
                 <Select value={gender} onValueChange={(v) => v && setGender(v)}>
-                  <SelectTrigger className="rounded-xl border-slate-200 text-base sm:text-sm h-10 focus:ring-rose-500">
+                  <SelectTrigger className="w-full rounded-xl border-slate-200 text-base sm:text-sm h-10 focus:ring-rose-500">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {GENDER_OPTIONS.map((g) => (
-                      <SelectItem key={g} value={g}>{g}</SelectItem>
+                      <SelectItem key={g} value={g}>
+                        {g}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -346,15 +372,19 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
                 <label className="text-xs font-semibold text-slate-700 mb-1 block">
                   রক্তের গ্রুপ <span className="text-rose-600">*</span>
                 </label>
-                <Select value={bloodGroup} onValueChange={(v) => v && setBloodGroup(v)}>
-                  <SelectTrigger className="rounded-xl border-slate-200 text-base sm:text-sm h-10 focus:ring-rose-500">
+                <Select
+                  value={bloodGroup}
+                  onValueChange={(v) => v && setBloodGroup(v)}
+                >
+                  <SelectTrigger className="w-full rounded-xl border-slate-200 text-base sm:text-sm h-10 focus:ring-rose-500">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {BLOOD_GROUPS.map((bg) => (
                       <SelectItem key={bg} value={bg}>
                         <span className="flex items-center gap-1.5 font-medium">
-                          <Droplets className="w-3.5 h-3.5 text-rose-500" /> {bg}
+                          <Droplets className="w-3.5 h-3.5 text-rose-500" />{" "}
+                          {bg}
                         </span>
                       </SelectItem>
                     ))}
@@ -365,7 +395,10 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
           </TabsContent>
 
           {/* TAB 2: CONTACT & ADDRESS */}
-          <TabsContent value="contact" className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none">
+          <TabsContent
+            value="contact"
+            className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
               <div>
                 <label className="text-xs font-semibold text-slate-700 mb-1 block">
@@ -433,19 +466,27 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
           </TabsContent>
 
           {/* TAB 3: CAREER & FAMILY */}
-          <TabsContent value="career" className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none">
+          <TabsContent
+            value="career"
+            className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
               <div>
                 <label className="text-xs font-semibold text-slate-700 mb-1 block">
                   বৈবাহিক অবস্থা <span className="text-rose-600">*</span>
                 </label>
-                <Select value={maritalStatus} onValueChange={(v) => v && setMaritalStatus(v)}>
-                  <SelectTrigger className="rounded-xl border-slate-200 text-base sm:text-sm h-10 focus:ring-rose-500">
+                <Select
+                  value={maritalStatus}
+                  onValueChange={(v) => v && setMaritalStatus(v)}
+                >
+                  <SelectTrigger className="w-full rounded-xl border-slate-200 text-base sm:text-sm h-10 focus:ring-rose-500">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {MARITAL_OPTIONS.map((m) => (
-                      <SelectItem key={m} value={m}>{m}</SelectItem>
+                      <SelectItem key={m} value={m}>
+                        {m}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -498,25 +539,36 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
           </TabsContent>
 
           {/* TAB 4: PHOTOS & MEMORIAL */}
-          <TabsContent value="media" className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none">
+          <TabsContent
+            value="media"
+            className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none"
+          >
             {/* Memorial Status Banner */}
-            <div className={`p-3.5 sm:p-4 rounded-xl border transition-all ${
-              isDeceased
-                ? "bg-slate-900 border-slate-800 text-white shadow-sm"
-                : "bg-slate-50 border-slate-200 text-slate-800"
-            }`}>
+            <div
+              className={`p-3.5 sm:p-4 rounded-xl border transition-all ${
+                isDeceased
+                  ? "bg-slate-900 border-slate-800 text-white shadow-sm"
+                  : "bg-slate-50 border-slate-200 text-slate-800"
+              }`}
+            >
               <label className="flex items-start justify-between gap-3 cursor-pointer select-none">
                 <div className="flex items-center gap-2.5 sm:gap-3">
-                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                    isDeceased ? "bg-rose-600 text-white" : "bg-slate-200 text-slate-600"
-                  }`}>
+                  <div
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                      isDeceased
+                        ? "bg-rose-600 text-white"
+                        : "bg-slate-200 text-slate-600"
+                    }`}
+                  >
                     <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
                     <p className="text-xs sm:text-sm font-bold">
                       প্রয়াত বন্ধু স্মরণিকা স্ট্যাটাস
                     </p>
-                    <p className={`text-[11px] sm:text-xs mt-0.5 ${isDeceased ? "text-slate-300" : "text-slate-500"}`}>
+                    <p
+                      className={`text-[11px] sm:text-xs mt-0.5 ${isDeceased ? "text-slate-300" : "text-slate-500"}`}
+                    >
                       অন থাকলে প্রোফাইলে বিশেষ স্মরণিকা ব্যাজ প্রদর্শিত হবে।
                     </p>
                   </div>
@@ -535,7 +587,8 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
               <div className="bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200 flex flex-col justify-between space-y-3">
                 <div>
                   <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-rose-600" /> বর্তমান প্রোফাইল ছবি
+                    <User className="w-3.5 h-3.5 text-rose-600" /> বর্তমান
+                    প্রোফাইল ছবি
                   </h4>
 
                   <div className="flex items-center gap-3 mt-2">
@@ -587,32 +640,25 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
                     </div>
                   </div>
                 </div>
-
-                <div>
-                  <label className="text-[11px] font-medium text-slate-600 block mb-1">
-                    বা সরাসরি ছবির URL পেস্ট করুন
-                  </label>
-                  <Input
-                    placeholder="https://..."
-                    value={profilePicture}
-                    onChange={(e) => setProfilePicture(e.target.value)}
-                    className="text-xs h-8 rounded-lg bg-white"
-                  />
-                </div>
               </div>
 
               {/* 1990 Then Photo Card */}
               <div className="bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200 flex flex-col justify-between space-y-3">
                 <div>
                   <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5 text-rose-600" /> ১৯৯০ সালের স্কুলের ছবি
+                    <ImageIcon className="w-3.5 h-3.5 text-rose-600" /> ১৯৯০
+                    সালের স্কুলের ছবি
                   </h4>
 
                   <div className="flex items-center gap-3 mt-2">
                     <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl border-2 border-white shadow-sm ring-1 ring-slate-200 overflow-hidden bg-slate-200 flex items-center justify-center shrink-0">
                       {thenPhoto ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={thenPhoto} alt="Then" className="w-full h-full object-cover" />
+                        <img
+                          src={thenPhoto}
+                          alt="Then"
+                          className="w-full h-full object-cover"
+                        />
                       ) : (
                         <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 text-slate-400" />
                       )}
@@ -632,7 +678,9 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
                         ) : (
                           <Upload className="w-3.5 h-3.5 mr-1.5 text-rose-600" />
                         )}
-                        {uploadingThenPhoto ? "আপলোড হচ্ছে..." : "স্কুলের ছবি আপলোড"}
+                        {uploadingThenPhoto
+                          ? "আপলোড হচ্ছে..."
+                          : "স্কুলের ছবি আপলোড"}
                       </Button>
                       <input
                         ref={thenPhotoInputRef}
@@ -658,18 +706,6 @@ export default function CreateMemberDialog({ onDone }: CreateMemberDialogProps) 
                       )}
                     </div>
                   </div>
-                </div>
-
-                <div>
-                  <label className="text-[11px] font-medium text-slate-600 block mb-1">
-                    বা সরাসরি ছবির URL পেস্ট করুন
-                  </label>
-                  <Input
-                    placeholder="https://..."
-                    value={thenPhoto}
-                    onChange={(e) => setThenPhoto(e.target.value)}
-                    className="text-xs h-8 rounded-lg bg-white"
-                  />
                 </div>
               </div>
             </div>
