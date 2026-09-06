@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, GraduationCap, Droplets, School } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 interface MemberIdCardProps {
   member: Profile;
@@ -75,6 +76,8 @@ export default function MemberIdCard({ member }: MemberIdCardProps) {
                   width={64}
                   height={80}
                   className="object-cover w-full h-full"
+                  placeholder="blur"
+                  blurDataURL={getShimmerDataUrl(64, 80)}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs text-center">

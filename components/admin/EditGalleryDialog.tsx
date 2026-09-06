@@ -43,6 +43,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { formatBanglaDate } from "@/lib/utils";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 const CATEGORIES = ["পুনর্মিলনী", "স্কুল জীবন", "ট্যুর ও আড্ডা", "স্মারক"];
 const ACCEPTED = ["image/jpg", "image/jpeg", "image/png", "image/webp", "image/heic"];
@@ -220,11 +221,15 @@ export default function EditGalleryDialog({
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <div className="relative w-32 h-32 sm:w-36 sm:h-36 shrink-0 rounded-2xl overflow-hidden border-2 border-white shadow-md bg-slate-200 group">
             {displayImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={displayImage}
-                alt={title}
-                className="w-full h-full object-cover"
+                alt={title || "Gallery photo"}
+                fill
+                className="object-cover"
+                sizes="144px"
+                placeholder="blur"
+                blurDataURL={getShimmerDataUrl(144, 144)}
+                unoptimized={displayImage.startsWith("blob:")}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-slate-400">

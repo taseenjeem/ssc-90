@@ -353,8 +353,16 @@ export default function AdminGalleryClient({ items }: { items: GalleryItem[] }) 
           <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-52 overflow-y-auto pr-1">
             {files.map((entry, i) => (
               <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 group border border-slate-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={entry.preview} alt="" className="w-full h-full object-cover" />
+                <Image
+                  src={entry.preview}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="100px"
+                  placeholder="blur"
+                  blurDataURL={getShimmerDataUrl(100, 100)}
+                  unoptimized={entry.preview.startsWith("blob:")}
+                />
                 {entry.status === "uploading" && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

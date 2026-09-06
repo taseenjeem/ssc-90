@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { formatBanglaDate } from "@/lib/utils";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 const BUCKET =
   process.env.NEXT_PUBLIC_STORAGE_BUCKET_INITIATIVES || "initiatives";
@@ -364,6 +365,8 @@ export default function AdminInitiativesClient({
                   fill
                   className="object-cover"
                   sizes="120px"
+                  placeholder="blur"
+                  blurDataURL={getShimmerDataUrl(120, 120)}
                 />
                 <button
                   type="button"

@@ -6,6 +6,8 @@ import { getSignedUploadUrl } from "@/actions/storage";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import { getShimmerDataUrl } from "@/lib/imageShimmer";
 import {
   Dialog,
   DialogContent,
@@ -675,13 +677,17 @@ export default function CreateMemberDialog({
                   </h4>
 
                   <div className="flex items-center gap-3 mt-2">
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl border-2 border-white shadow-sm ring-1 ring-slate-200 overflow-hidden bg-slate-200 flex items-center justify-center shrink-0">
+                    <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl border-2 border-white shadow-sm ring-1 ring-slate-200 overflow-hidden bg-slate-200 flex items-center justify-center shrink-0">
                       {thenPhoto ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={thenPhoto}
                           alt="Then"
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                          placeholder="blur"
+                          blurDataURL={getShimmerDataUrl(64, 64)}
+                          unoptimized={thenPhoto.startsWith("blob:")}
                         />
                       ) : (
                         <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 text-slate-400" />
