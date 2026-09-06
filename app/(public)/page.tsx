@@ -126,20 +126,26 @@ export default async function HomePage() {
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed">
-            শেরপুর জেলার সকল বিদ্যালয়ের ১৯৯০ সালের এসএসসি উত্তীর্ণ বন্ধুদের একত্রিত করার এই অনলাইন অ্যালামনাই প্ল্যাটফর্মে আপনাকে স্বাগতম। স্মৃতিচারণ করুন, যোগাযোগ রাখুন, একসাথে এগিয়ে যান।
+            শেরপুর জেলার সকল বিদ্যালয়ের ১৯৯০ সালের এসএসসি উত্তীর্ণ বন্ধুদের
+            একত্রিত করার এই অনলাইন অ্যালামনাই প্ল্যাটফর্মে আপনাকে স্বাগতম।
+            স্মৃতিচারণ করুন, যোগাযোগ রাখুন, একসাথে এগিয়ে যান।
           </p>
 
           {/* Upazilas of Sherpur District */}
           <div className="mb-10 flex flex-wrap items-center justify-center gap-2 text-xs text-white/70">
-            <span className="text-rose-400 font-semibold">শেরপুর জেলার অঞ্চল:</span>
-            {["শেরপুর সদর", "নকলা", "নালিতাবাড়ী", "শ্রীবরদী", "ঝিনাইগাতী"].map((upazila) => (
-              <span
-                key={upazila}
-                className="bg-white/10 hover:bg-white/15 border border-white/15 px-2.5 py-1 rounded-full backdrop-blur-sm transition-colors text-white/90"
-              >
-                {upazila}
-              </span>
-            ))}
+            <span className="text-rose-400 font-semibold">
+              শেরপুর জেলার অঞ্চল:
+            </span>
+            {["শেরপুর সদর", "নকলা", "নালিতাবাড়ী", "শ্রীবরদী", "ঝিনাইগাতী"].map(
+              (upazila) => (
+                <span
+                  key={upazila}
+                  className="bg-white/10 hover:bg-white/15 border border-white/15 px-2.5 py-1 rounded-full backdrop-blur-sm transition-colors text-white/90"
+                >
+                  {upazila}
+                </span>
+              ),
+            )}
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -255,7 +261,8 @@ export default async function HomePage() {
             <div className="flex items-end justify-between mb-10">
               <div>
                 <Badge className="bg-amber-100 text-amber-800 border-0 mb-3 font-semibold">
-                  <Sparkles className="w-3 h-3 mr-1 text-amber-600" /> স্মৃতির পাতা থেকে
+                  <Sparkles className="w-3 h-3 mr-1 text-amber-600" /> স্মৃতির
+                  পাতা থেকে
                 </Badge>
                 <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">
                   বন্ধুদের আবেগ ও অনুভূতি
@@ -284,9 +291,13 @@ export default async function HomePage() {
                   </p>
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                     <div>
-                      <p className="font-bold text-slate-900 text-sm">{msg.senderName}</p>
+                      <p className="font-bold text-slate-900 text-sm">
+                        {msg.senderName}
+                      </p>
                       {msg.schoolName && (
-                        <p className="text-xs text-slate-400 mt-0.5">{msg.schoolName}</p>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {msg.schoolName}
+                        </p>
                       )}
                     </div>
                     <span className="text-[11px] text-slate-400">
@@ -298,7 +309,11 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-8 text-center sm:hidden">
-              <Button asChild variant="outline" className="border-amber-200 text-amber-800 rounded-xl">
+              <Button
+                asChild
+                variant="outline"
+                className="border-amber-200 text-amber-800 rounded-xl"
+              >
                 <Link href="/memories">সব স্মৃতি দেখুন ও স্মৃতি লিখুন</Link>
               </Button>
             </div>
@@ -319,7 +334,8 @@ export default async function HomePage() {
                   শেরপুর জেলায় জরুরি রক্তের প্রয়োজনে ব্যাচ পরিবার
                 </h3>
                 <p className="text-slate-300 text-sm mt-1">
-                  শেরপুরসহ যেকোনো স্থানে রক্তের গ্রুপ মেলাতে বন্ধুদের সাথে যোগাযোগ করুন অথবা রক্তদাতা হিসেবে পাশে থাকুন
+                  শেরপুরসহ যেকোনো স্থানে রক্তের গ্রুপ মেলাতে বন্ধুদের সাথে
+                  যোগাযোগ করুন অথবা রক্তদাতা হিসেবে পাশে থাকুন
                 </p>
               </div>
             </div>
@@ -343,7 +359,8 @@ export default async function HomePage() {
             আপনি কি শেরপুর জেলার এসএসসি ৯০ ব্যাচের বন্ধু?
           </h2>
           <p className="text-rose-100 text-lg mb-8 max-w-2xl mx-auto">
-            আপনার তথ্য যোগ করুন এবং শেরপুরের সকল স্কুলের পুরোনো সহপাঠীদের সাথে আবার সংযুক্ত হন।
+            আপনার তথ্য যোগ করুন এবং শেরপুরের সকল স্কুলের পুরোনো সহপাঠীদের সাথে
+            আবার সংযুক্ত হন।
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button

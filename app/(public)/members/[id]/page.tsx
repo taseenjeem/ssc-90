@@ -64,7 +64,7 @@ export default async function MemberProfilePage({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-16">
+    <div className="min-h-screen pb-16">
       {/* Header Banner */}
       <div className="bg-gradient-to-br from-slate-900 via-rose-950 to-slate-900 py-12 px-4 sm:px-6"></div>
 

@@ -19,7 +19,12 @@ const icons = {
   memories: BookOpen,
 };
 
-export default function MetricCounter({ iconType, label, value, color }: MetricCounterProps) {
+export default function MetricCounter({
+  iconType,
+  label,
+  value,
+  color,
+}: MetricCounterProps) {
   const Icon = icons[iconType] ?? Users;
 
   return (
@@ -33,7 +38,9 @@ export default function MetricCounter({ iconType, label, value, color }: MetricC
       <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 shadow-xs mb-3">
         <Icon className={`w-7 h-7 ${color}`} />
       </div>
-      <p className={`text-4xl font-bold ${color} mb-1`}>{value.toLocaleString("bn-BD")}</p>
+      <p className={`text-4xl font-bold ${color} mb-1`}>
+        {value.toLocaleString("bn-BD")}
+      </p>
       <p className="text-sm text-slate-600 font-medium">{label}</p>
     </motion.div>
   );
