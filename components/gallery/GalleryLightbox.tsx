@@ -22,7 +22,7 @@ import {
   ImageIcon,
 } from "lucide-react";
 import { getShimmerDataUrl } from "@/lib/imageShimmer";
-import { cn } from "@/lib/utils";
+import { cn, formatBanglaDate } from "@/lib/utils";
 
 const CATEGORY_META: Record<
   string,
@@ -169,7 +169,7 @@ export default function GalleryLightbox({ items }: GalleryLightboxProps) {
                   <div className="flex items-center gap-1">
                     <Calendar className="w-3 h-3 text-rose-300" />
                     <span className="text-xs text-slate-300">
-                      {item.eventDate}
+                      {formatBanglaDate(item.eventDate)}
                     </span>
                   </div>
                 )}

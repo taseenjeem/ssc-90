@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HandHeart, MapPin, Calendar, Users, ArrowRight } from "lucide-react";
 import { getShimmerDataUrl } from "@/lib/imageShimmer";
+import { formatBanglaDate } from "@/lib/utils";
 
 export const revalidate = 3600;
 
@@ -75,7 +76,7 @@ export default async function InitiativesPage() {
                   <div className="space-y-1.5 mb-4">
                     <div className="flex items-center gap-2 text-xs text-slate-500">
                       <Calendar className="w-3.5 h-3.5 text-emerald-500" />
-                      <span>{initiative.date}</span>
+                      <span>{formatBanglaDate(initiative.date)}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-slate-500">
                       <MapPin className="w-3.5 h-3.5 text-emerald-500" />

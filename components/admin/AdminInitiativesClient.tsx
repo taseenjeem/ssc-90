@@ -41,6 +41,7 @@ import {
   ImageIcon,
 } from "lucide-react";
 import Image from "next/image";
+import { formatBanglaDate } from "@/lib/utils";
 
 const BUCKET =
   process.env.NEXT_PUBLIC_STORAGE_BUCKET_INITIATIVES || "initiatives";
@@ -262,11 +263,11 @@ export default function AdminInitiativesClient({
             <Calendar className="w-3.5 h-3.5 text-emerald-600" /> তারিখ *
           </label>
           <Input
+            type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
             className="rounded-xl text-base sm:text-sm h-11"
-            placeholder="যেমন: জানুয়ারি ২০২৪"
           />
         </div>
         <div>
@@ -470,7 +471,7 @@ export default function AdminInitiativesClient({
               <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-slate-500">
                 <span className="flex items-center gap-1 font-medium">
                   <Calendar className="w-3.5 h-3.5 text-emerald-600" />
-                  {initiative.date}
+                  {formatBanglaDate(initiative.date)}
                 </span>
                 <span className="flex items-center gap-1 font-medium">
                   <MapPin className="w-3.5 h-3.5 text-emerald-600" />

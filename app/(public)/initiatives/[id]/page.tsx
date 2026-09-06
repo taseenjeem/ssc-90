@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Users, Banknote, ArrowLeft } from "lucide-react";
 import InitiativeLightbox from "@/components/initiatives/InitiativeLightbox";
 import { getShimmerDataUrl } from "@/lib/imageShimmer";
+import { formatBanglaDate } from "@/lib/utils";
 
 export const revalidate = 3600;
 
@@ -57,7 +58,7 @@ export default async function InitiativeDetailPage({
         {/* Meta */}
         <div className="flex flex-wrap gap-3 mb-6">
           <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 gap-1">
-            <Calendar className="w-3.5 h-3.5" /> {initiative.date}
+            <Calendar className="w-3.5 h-3.5" /> {formatBanglaDate(initiative.date)}
           </Badge>
           <Badge className="bg-slate-100 text-slate-600 border border-slate-200 gap-1">
             <MapPin className="w-3.5 h-3.5" /> {initiative.location}

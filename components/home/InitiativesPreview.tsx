@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
+import { formatBanglaDate } from "@/lib/utils";
+
 interface InitiativesPreviewProps {
   initiatives: Initiative[];
 }
@@ -67,7 +69,7 @@ export default function InitiativesPreview({ initiatives }: InitiativesPreviewPr
               <div className="space-y-2 py-3 border-t border-slate-100 mb-4 text-xs text-slate-500">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                  <span className="font-medium text-slate-600">{initiative.date}</span>
+                  <span className="font-medium text-slate-600">{formatBanglaDate(initiative.date)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
