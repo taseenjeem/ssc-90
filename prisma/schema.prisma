@@ -29,6 +29,7 @@ model Profile {
   thenPhoto        String?  // Supabase Storage Public URL (১৯৯০ সালের স্কুল জীবনের ছবি)
   aboutMe          String?  // স্কুল জীবনের স্মৃতিচারণ বা আত্মকথা
   isDeceased       Boolean  @default(false) // প্রয়াত বন্ধুদের জন্য স্মরণিকা ফ্ল্যাগ
+  deceasedDate     String?  // ইন্তেকালের / মৃত্যুর তারিখ (যেমন: ২০২৪-০৫-১২)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

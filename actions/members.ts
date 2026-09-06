@@ -39,6 +39,11 @@ const profileSchema = z.object({
     .nullable()
     .transform((v) => (v?.trim() ? v.trim() : null)),
   isDeceased: z.boolean().optional().default(false),
+  deceasedDate: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v?.trim() ? v.trim() : null)),
 });
 
 export async function createMember(formData: FormData) {
@@ -60,6 +65,7 @@ export async function createMember(formData: FormData) {
     thenPhoto: formData.get("thenPhoto") || null,
     aboutMe: formData.get("aboutMe") || null,
     isDeceased: formData.get("isDeceased") === "true",
+    deceasedDate: formData.get("deceasedDate") || null,
   };
 
   const parsed = profileSchema.safeParse(raw);
@@ -99,6 +105,7 @@ export async function updateMember(id: string, formData: FormData) {
     thenPhoto: formData.get("thenPhoto") || null,
     aboutMe: formData.get("aboutMe") || null,
     isDeceased: formData.get("isDeceased") === "true",
+    deceasedDate: formData.get("deceasedDate") || null,
   };
 
   const parsed = profileSchema.safeParse(raw);

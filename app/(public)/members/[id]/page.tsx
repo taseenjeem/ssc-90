@@ -17,10 +17,26 @@ import {
   Heart,
   Users,
   User,
-  ArrowLeft,
   PhoneCall,
   MessageCircle,
+  Flower2,
+  Calendar,
 } from "lucide-react";
+
+function formatBanglaDate(dateStr: string) {
+  if (!dateStr) return "";
+  try {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString("bn-BD", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    }
+  } catch {}
+  return dateStr;
+}
 
 export const revalidate = 3600;
 
@@ -34,19 +50,17 @@ export default async function MemberProfilePage({
   if (!member) notFound();
 
   const fields = [
-    { label: "বাংলা পূর্ণ নাম", value: member.banglaFullName, icon: User },
-    { label: "ইংরেজি নাম", value: member.engFullName, icon: User },
-    { label: "ডাকনাম", value: member.nickName, icon: User },
-    { label: "লিঙ্গ", value: member.gender, icon: Users },
-    { label: "রক্তের গ্রুপ", value: member.bloodGroup, icon: Droplets },
     { label: "স্কুলের নাম", value: member.schoolName, icon: School },
+    { label: "রক্তের গ্রুপ", value: member.bloodGroup, icon: Droplets },
+    { label: "পেশা", value: member.profession, icon: Briefcase },
     { label: "বৈবাহিক অবস্থা", value: member.maritalStatus, icon: Heart },
     {
-      label: "সন্তানের সংখ্যা",
-      value: member.childrenCount?.toString() ?? "০",
+      label: "সন্তান সংখ্যা",
+      value:
+        member.childrenCount !== null ? `${member.childrenCount} জন` : "০ জন",
       icon: Users,
     },
-    { label: "পেশা", value: member.profession, icon: Briefcase },
+    { label: "লিঙ্গ", value: member.gender, icon: User },
     { label: "বর্তমান ঠিকানা", value: member.currentAddress, icon: MapPin },
     { label: "স্থায়ী ঠিকানা", value: member.permanentAddress, icon: MapPin },
     {
@@ -84,8 +98,9 @@ export default async function MemberProfilePage({
                     {member.banglaFullName}
                   </h1>
                   {member.isDeceased && (
-                    <Badge className="bg-slate-200 text-slate-600 border-0">
-                      প্রয়াত
+                    <Badge className="bg-slate-900 text-slate-100 border-0 gap-1 text-xs py-1 px-2.5">
+                      <Flower2 className="w-3.5 h-3.5 text-rose-400" />
+                      প্রয়াত {member.deceasedDate ? `• ইন্তেকাল: ${formatBanglaDate(member.deceasedDate)}` : ""}
                     </Badge>
                   )}
                   <Badge className="bg-rose-100 text-rose-700 border-rose-200 border font-bold">
@@ -126,6 +141,28 @@ export default async function MemberProfilePage({
                 )}
               </div>
             </div>
+
+            {/* Deceased Memorial Banner */}
+            {member.isDeceased && (
+              <div className="mt-6 p-4.5 bg-slate-950 text-slate-100 rounded-2xl border border-slate-800 flex items-start gap-3.5 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 text-slate-300">
+                  <Flower2 className="w-5 h-5 text-rose-400" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2 flex-wrap">
+                    চিরস্মরণীয় বন্ধু
+                    {member.deceasedDate && (
+                      <span className="text-xs text-rose-300/90 font-medium bg-rose-950/60 border border-rose-800/60 px-2 py-0.5 rounded-full">
+                        इন্তেকাল: {formatBanglaDate(member.deceasedDate)}
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-xs text-slate-300 mt-1 italic leading-relaxed">
+                    &ldquo;আমাদের বন্ধু আজ আমাদের মাঝে নেই, কিন্তু তাঁর অমলিন স্মৃতি চিরদিন বেঁচে থাকবে আমাদের হৃদয়ে। আল্লাহ তায়ালা তাঁকে জান্নাতুল ফিরদাউস দান করুন।&rdquo;
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* About Me */}
             {member.aboutMe && (

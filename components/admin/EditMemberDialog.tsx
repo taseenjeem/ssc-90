@@ -21,12 +21,7 @@ import {
   DrawerTitle,
   DrawerFooter,
 } from "@/components/ui/drawer";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -53,13 +48,16 @@ import {
   Image as ImageIcon,
   Flame,
   Info,
+  Calendar,
 } from "lucide-react";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 const GENDER_OPTIONS = ["পুরুষ", "মহিলা"];
 const MARITAL_OPTIONS = ["বিবাহিত", "অবিবাহিত", "অন্যান্য"];
 const BUCKET = process.env.NEXT_PUBLIC_STORAGE_BUCKET_MEMBERS || "members";
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://pzowrpnbbymuvfnwuqhh.supabase.co";
+const SUPABASE_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  "https://pzowrpnbbymuvfnwuqhh.supabase.co";
 
 interface EditMemberDialogProps {
   member: Profile | null;
@@ -96,6 +94,7 @@ export default function EditMemberDialog({
   const [thenPhoto, setThenPhoto] = useState("");
   const [aboutMe, setAboutMe] = useState("");
   const [isDeceased, setIsDeceased] = useState(false);
+  const [deceasedDate, setDeceasedDate] = useState("");
 
   // Uploading states
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -113,7 +112,9 @@ export default function EditMemberDialog({
       setBloodGroup(member.bloodGroup || "O+");
       setSchoolName(member.schoolName || "");
       setMaritalStatus(member.maritalStatus || "বিবাহিত");
-      setChildrenCount(member.childrenCount !== null ? String(member.childrenCount) : "0");
+      setChildrenCount(
+        member.childrenCount !== null ? String(member.childrenCount) : "0",
+      );
       setProfession(member.profession || "");
       setCurrentAddress(member.currentAddress || "");
       setPermanentAddress(member.permanentAddress || "");
@@ -123,6 +124,7 @@ export default function EditMemberDialog({
       setThenPhoto(member.thenPhoto || "");
       setAboutMe(member.aboutMe || "");
       setIsDeceased(Boolean(member.isDeceased));
+      setDeceasedDate(member.deceasedDate || "");
       setActiveTab("basic");
     }
   }, [member]);
@@ -130,8 +132,17 @@ export default function EditMemberDialog({
   // Handle direct file upload for either avatar or thenPhoto
   const handleFileUpload = async (file: File, type: "avatar" | "thenPhoto") => {
     if (!file) return;
-    const allowed = ["image/jpeg", "image/png", "image/webp", "image/jpg", "image/heic"];
-    if (!allowed.includes(file.type) && !file.name.toLowerCase().endsWith(".heic")) {
+    const allowed = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/jpg",
+      "image/heic",
+    ];
+    if (
+      !allowed.includes(file.type) &&
+      !file.name.toLowerCase().endsWith(".heic")
+    ) {
       toast.error("শুধুমাত্র ছবি ফাইল (JPG, PNG, WebP) আপলোড করা যাবে।");
       return;
     }
@@ -140,7 +151,8 @@ export default function EditMemberDialog({
       return;
     }
 
-    const setUploading = type === "avatar" ? setUploadingAvatar : setUploadingThenPhoto;
+    const setUploading =
+      type === "avatar" ? setUploadingAvatar : setUploadingThenPhoto;
     setUploading(true);
 
     try {
@@ -201,6 +213,7 @@ export default function EditMemberDialog({
     formData.append("thenPhoto", thenPhoto);
     formData.append("aboutMe", aboutMe);
     formData.append("isDeceased", String(isDeceased));
+    formData.append("deceasedDate", isDeceased && deceasedDate ? deceasedDate : "");
 
     startTransition(async () => {
       const res = await updateMember(member.id, formData);
@@ -229,7 +242,10 @@ export default function EditMemberDialog({
             {banglaFullName || member?.banglaFullName || "সদস্য তথ্য সম্পাদনা"}
           </h2>
           {nickName && (
-            <Badge variant="secondary" className="bg-rose-50 text-rose-700 border-rose-100 text-[11px] font-semibold py-0">
+            <Badge
+              variant="secondary"
+              className="bg-rose-50 text-rose-700 border-rose-100 text-[11px] font-semibold py-0"
+            >
               {nickName}
             </Badge>
           )}
@@ -240,7 +256,8 @@ export default function EditMemberDialog({
           )}
         </div>
         <p className="text-xs text-slate-500 mt-0.5 truncate">
-          {schoolName || member?.schoolName || "এসএসসি ব্যাচ ১৯৯০"} • {engFullName || member?.engFullName}
+          {schoolName || member?.schoolName || "এসএসসি ব্যাচ ১৯৯০"} •{" "}
+          {engFullName || member?.engFullName}
         </p>
       </div>
     </div>
@@ -248,8 +265,15 @@ export default function EditMemberDialog({
 
   // The inner form content with fully responsive tabs and fields
   const formContent = (
-    <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 overflow-hidden">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col flex-1 overflow-hidden"
+    >
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex flex-col flex-1 overflow-hidden"
+      >
         {/* Responsive Horizontal Scroll Tabs */}
         <div className="px-4 sm:px-6 pt-2 pb-2 border-b border-slate-100 bg-slate-50/50 shrink-0 overflow-x-auto scrollbar-none">
           <TabsList className="bg-slate-200/60 p-1 rounded-xl h-auto inline-flex min-w-full sm:min-w-0 sm:w-auto gap-1">
@@ -290,10 +314,16 @@ export default function EditMemberDialog({
         {/* Scrollable Tab Panels */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 overscroll-contain">
           {/* TAB 1: BASIC INFORMATION */}
-          <TabsContent value="basic" className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none">
+          <TabsContent
+            value="basic"
+            className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none"
+          >
             <div className="bg-rose-50/60 border border-rose-100 rounded-xl p-3 flex items-start gap-2 text-rose-900 text-xs">
               <Info className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-              <span>নাম, ডাকনাম, স্কুল এবং রক্তের গ্রুপ সঠিকভাবে লিখুন। তারকা (*) চিহ্নিত ঘরগুলো আবশ্যক।</span>
+              <span>
+                নাম, ডাকনাম, স্কুল এবং রক্তের গ্রুপ সঠিকভাবে লিখুন। তারকা (*)
+                চিহ্নিত ঘরগুলো আবশ্যক।
+              </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
@@ -362,7 +392,9 @@ export default function EditMemberDialog({
                   </SelectTrigger>
                   <SelectContent>
                     {GENDER_OPTIONS.map((g) => (
-                      <SelectItem key={g} value={g}>{g}</SelectItem>
+                      <SelectItem key={g} value={g}>
+                        {g}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -372,7 +404,10 @@ export default function EditMemberDialog({
                 <label className="text-xs font-semibold text-slate-700 mb-1 block">
                   রক্তের গ্রুপ <span className="text-rose-600">*</span>
                 </label>
-                <Select value={bloodGroup} onValueChange={(v) => v && setBloodGroup(v)}>
+                <Select
+                  value={bloodGroup}
+                  onValueChange={(v) => v && setBloodGroup(v)}
+                >
                   <SelectTrigger className="w-full rounded-xl border-slate-200 text-base sm:text-sm h-10 sm:h-10 focus:ring-rose-500">
                     <SelectValue />
                   </SelectTrigger>
@@ -380,7 +415,8 @@ export default function EditMemberDialog({
                     {BLOOD_GROUPS.map((bg) => (
                       <SelectItem key={bg} value={bg}>
                         <span className="flex items-center gap-1.5 font-medium">
-                          <Droplets className="w-3.5 h-3.5 text-rose-500" /> {bg}
+                          <Droplets className="w-3.5 h-3.5 text-rose-500" />{" "}
+                          {bg}
                         </span>
                       </SelectItem>
                     ))}
@@ -391,7 +427,10 @@ export default function EditMemberDialog({
           </TabsContent>
 
           {/* TAB 2: CONTACT & ADDRESS */}
-          <TabsContent value="contact" className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none">
+          <TabsContent
+            value="contact"
+            className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
               <div>
                 <label className="text-xs font-semibold text-slate-700 mb-1 block">
@@ -459,19 +498,27 @@ export default function EditMemberDialog({
           </TabsContent>
 
           {/* TAB 3: CAREER & FAMILY */}
-          <TabsContent value="career" className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none">
+          <TabsContent
+            value="career"
+            className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
               <div>
                 <label className="text-xs font-semibold text-slate-700 mb-1 block">
                   বৈবাহিক অবস্থা <span className="text-rose-600">*</span>
                 </label>
-                <Select value={maritalStatus} onValueChange={(v) => v && setMaritalStatus(v)}>
+                <Select
+                  value={maritalStatus}
+                  onValueChange={(v) => v && setMaritalStatus(v)}
+                >
                   <SelectTrigger className="w-full rounded-xl border-slate-200 text-base sm:text-sm h-10 sm:h-10 focus:ring-rose-500">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {MARITAL_OPTIONS.map((m) => (
-                      <SelectItem key={m} value={m}>{m}</SelectItem>
+                      <SelectItem key={m} value={m}>
+                        {m}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -524,26 +571,37 @@ export default function EditMemberDialog({
           </TabsContent>
 
           {/* TAB 4: PHOTOS & MEMORIAL */}
-          <TabsContent value="media" className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none">
+          <TabsContent
+            value="media"
+            className="space-y-4 sm:space-y-5 m-0 focus-visible:outline-none"
+          >
             {/* Memorial Status Banner */}
-            <div className={`p-3.5 sm:p-4 rounded-xl border transition-all ${
-              isDeceased
-                ? "bg-slate-900 border-slate-800 text-white shadow-sm"
-                : "bg-slate-50 border-slate-200 text-slate-800"
-            }`}>
+            <div
+              className={`p-3.5 sm:p-4 rounded-xl border transition-all ${
+                isDeceased
+                  ? "bg-slate-900 border-slate-800 text-white shadow-sm"
+                  : "bg-slate-50 border-slate-200 text-slate-800"
+              }`}
+            >
               <label className="flex items-start justify-between gap-3 cursor-pointer select-none">
                 <div className="flex items-center gap-2.5 sm:gap-3">
-                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                    isDeceased ? "bg-rose-600 text-white" : "bg-slate-200 text-slate-600"
-                  }`}>
+                  <div
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                      isDeceased
+                        ? "bg-rose-600 text-white"
+                        : "bg-slate-200 text-slate-600"
+                    }`}
+                  >
                     <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
                     <p className="text-xs sm:text-sm font-bold">
                       প্রয়াত বন্ধু স্মরণিকা স্ট্যাটাস
                     </p>
-                    <p className={`text-[11px] sm:text-xs mt-0.5 ${isDeceased ? "text-slate-300" : "text-slate-500"}`}>
-                      অন থাকলে প্রোফাইলে স্মরণিকা ব্যাজ প্রদর্শিত হবে।
+                    <p
+                      className={`text-[11px] sm:text-xs mt-0.5 ${isDeceased ? "text-slate-300" : "text-slate-500"}`}
+                    >
+                      অন থাকলে শ্রদ্ধাঞ্জলি পাতা ও প্রোফাইলে বিশেষ স্মরণিকা ব্যাজ প্রদর্শিত হবে।
                     </p>
                   </div>
                 </div>
@@ -554,6 +612,26 @@ export default function EditMemberDialog({
                   className="w-5 h-5 rounded border-slate-400 text-rose-600 focus:ring-rose-500 cursor-pointer shrink-0 mt-1"
                 />
               </label>
+
+              {isDeceased && (
+                <div className="mt-3.5 pt-3.5 border-t border-slate-700/80 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className="text-xs font-semibold text-slate-200 mb-1.5 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-rose-400" />
+                    ইন্তেকাল / মৃত্যুর তারিখ (ঐচ্ছিক)
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type="date"
+                      value={deceasedDate}
+                      onChange={(e) => setDeceasedDate(e.target.value)}
+                      className="w-full rounded-xl bg-slate-800 border-slate-700 text-white text-sm h-10 px-3 focus:ring-rose-500 focus:border-rose-500 [color-scheme:dark]"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    তারিখ সিলেক্ট করলে প্রোফাইল ও শ্রদ্ধাঞ্জলি পাতায় সুন্দরভাবে প্রদর্শিত হবে।
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -561,7 +639,8 @@ export default function EditMemberDialog({
               <div className="bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200 flex flex-col justify-between space-y-3">
                 <div>
                   <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-rose-600" /> বর্তমান প্রোফাইল ছবি
+                    <User className="w-3.5 h-3.5 text-rose-600" /> বর্তমান
+                    প্রোফাইল ছবি
                   </h4>
 
                   <div className="flex items-center gap-3 mt-2">
@@ -613,32 +692,25 @@ export default function EditMemberDialog({
                     </div>
                   </div>
                 </div>
-
-                <div>
-                  <label className="text-[11px] font-medium text-slate-600 block mb-1">
-                    বা সরাসরি ছবির URL পেস্ট করুন
-                  </label>
-                  <Input
-                    placeholder="https://..."
-                    value={profilePicture}
-                    onChange={(e) => setProfilePicture(e.target.value)}
-                    className="text-xs h-8 rounded-lg bg-white"
-                  />
-                </div>
               </div>
 
               {/* 1990 Then Photo Card */}
               <div className="bg-slate-50/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200 flex flex-col justify-between space-y-3">
                 <div>
                   <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5 text-rose-600" /> ১৯৯০ সালের স্কুলের ছবি
+                    <ImageIcon className="w-3.5 h-3.5 text-rose-600" /> ১৯৯০
+                    সালের স্কুলের ছবি
                   </h4>
 
                   <div className="flex items-center gap-3 mt-2">
                     <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl border-2 border-white shadow-sm ring-1 ring-slate-200 overflow-hidden bg-slate-200 flex items-center justify-center shrink-0">
                       {thenPhoto ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={thenPhoto} alt="Then" className="w-full h-full object-cover" />
+                        <img
+                          src={thenPhoto}
+                          alt="Then"
+                          className="w-full h-full object-cover"
+                        />
                       ) : (
                         <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 text-slate-400" />
                       )}
@@ -658,7 +730,9 @@ export default function EditMemberDialog({
                         ) : (
                           <Upload className="w-3.5 h-3.5 mr-1.5 text-rose-600" />
                         )}
-                        {uploadingThenPhoto ? "আপলোড হচ্ছে..." : "স্কুলের ছবি আপলোড"}
+                        {uploadingThenPhoto
+                          ? "আপলোড হচ্ছে..."
+                          : "স্কুলের ছবি আপলোড"}
                       </Button>
                       <input
                         ref={thenPhotoInputRef}
@@ -684,18 +758,6 @@ export default function EditMemberDialog({
                       )}
                     </div>
                   </div>
-                </div>
-
-                <div>
-                  <label className="text-[11px] font-medium text-slate-600 block mb-1">
-                    বা সরাসরি ছবির URL পেস্ট করুন
-                  </label>
-                  <Input
-                    placeholder="https://..."
-                    value={thenPhoto}
-                    onChange={(e) => setThenPhoto(e.target.value)}
-                    className="text-xs h-8 rounded-lg bg-white"
-                  />
                 </div>
               </div>
             </div>

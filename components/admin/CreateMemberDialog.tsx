@@ -47,6 +47,7 @@ import {
   Image as ImageIcon,
   Flame,
   Info,
+  Calendar,
 } from "lucide-react";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
@@ -87,6 +88,7 @@ export default function CreateMemberDialog({
   const [thenPhoto, setThenPhoto] = useState("");
   const [aboutMe, setAboutMe] = useState("");
   const [isDeceased, setIsDeceased] = useState(false);
+  const [deceasedDate, setDeceasedDate] = useState("");
 
   // Uploading states
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -112,6 +114,7 @@ export default function CreateMemberDialog({
     setThenPhoto("");
     setAboutMe("");
     setIsDeceased(false);
+    setDeceasedDate("");
     setActiveTab("basic");
   };
 
@@ -198,6 +201,7 @@ export default function CreateMemberDialog({
     formData.append("thenPhoto", thenPhoto);
     formData.append("aboutMe", aboutMe);
     formData.append("isDeceased", String(isDeceased));
+    formData.append("deceasedDate", isDeceased && deceasedDate ? deceasedDate : "");
 
     startTransition(async () => {
       const result = await createMember(formData);
@@ -569,7 +573,7 @@ export default function CreateMemberDialog({
                     <p
                       className={`text-[11px] sm:text-xs mt-0.5 ${isDeceased ? "text-slate-300" : "text-slate-500"}`}
                     >
-                      অন থাকলে প্রোফাইলে বিশেষ স্মরণিকা ব্যাজ প্রদর্শিত হবে।
+                      অন থাকলে শ্রদ্ধাঞ্জলি পাতা ও প্রোফাইলে বিশেষ স্মরণিকা ব্যাজ প্রদর্শিত হবে।
                     </p>
                   </div>
                 </div>
@@ -580,6 +584,26 @@ export default function CreateMemberDialog({
                   className="w-5 h-5 rounded border-slate-400 text-rose-600 focus:ring-rose-500 cursor-pointer shrink-0 mt-1"
                 />
               </label>
+
+              {isDeceased && (
+                <div className="mt-3.5 pt-3.5 border-t border-slate-700/80 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className="text-xs font-semibold text-slate-200 mb-1.5 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-rose-400" />
+                    ইন্তেকাল / মৃত্যুর তারিখ (ঐচ্ছিক)
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type="date"
+                      value={deceasedDate}
+                      onChange={(e) => setDeceasedDate(e.target.value)}
+                      className="w-full rounded-xl bg-slate-800 border-slate-700 text-white text-sm h-10 px-3 focus:ring-rose-500 focus:border-rose-500 [color-scheme:dark]"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    তারিখ সিলেক্ট করলে প্রোফাইল ও শ্রদ্ধাঞ্জলি পাতায় সুন্দরভাবে প্রদর্শিত হবে।
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
