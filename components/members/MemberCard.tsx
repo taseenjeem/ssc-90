@@ -37,7 +37,7 @@ export default function MemberCard({ member }: MemberCardProps) {
       {/* Avatar */}
       <div
         className={cn(
-          "relative h-44 flex items-center justify-center overflow-hidden transition-colors",
+          "relative aspect-square w-full flex items-center justify-center overflow-hidden transition-colors",
           isDeceased
             ? "bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200"
             : "bg-gradient-to-br from-rose-50 to-slate-100"
@@ -55,7 +55,7 @@ export default function MemberCard({ member }: MemberCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
             quality={85}
             placeholder="blur"
-            blurDataURL={getShimmerDataUrl(300, 176)}
+            blurDataURL={getShimmerDataUrl(300, 300)}
           />
         ) : (
           <div className="flex flex-col items-center gap-2">

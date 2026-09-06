@@ -126,7 +126,9 @@ export default function EditMemberDialog({
       setThenPhoto(member.thenPhoto || "");
       setAboutMe(member.aboutMe || "");
       setIsDeceased(Boolean(member.isDeceased));
-      setDeceasedDate(member.deceasedDate || "");
+      setDeceasedDate(
+        member.deceasedDate ? member.deceasedDate.slice(0, 10) : "",
+      );
       setActiveTab("basic");
     }
   }, [member]);

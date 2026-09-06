@@ -76,9 +76,30 @@ export async function createMember(formData: FormData) {
   }
 
   const userId = crypto.randomUUID();
-  const created = await prisma.profile.create({
-    data: { ...parsed.data, userId },
-  });
+  let created;
+  try {
+    created = await prisma.profile.create({
+      data: { ...parsed.data, userId },
+    });
+  } catch (err: unknown) {
+    const errorMsg = String((err as Error)?.message || "");
+    if (errorMsg.includes("deceasedDate")) {
+      const { deceasedDate, ...dataWithoutDeceasedDate } = parsed.data;
+      created = await prisma.profile.create({
+        data: { ...dataWithoutDeceasedDate, userId },
+      });
+      if (deceasedDate) {
+        await prisma.$executeRawUnsafe(
+          `UPDATE "Profile" SET "deceasedDate" = $1::text WHERE id = $2`,
+          deceasedDate,
+          created.id
+        );
+      }
+      (created as Record<string, unknown>).deceasedDate = deceasedDate ?? null;
+    } else {
+      throw err;
+    }
+  }
 
   revalidatePath("/members");
   revalidatePath("/in-memoriam");
@@ -117,7 +138,27 @@ export async function updateMember(id: string, formData: FormData) {
     return { success: false, errors: fieldErrors, message: firstError };
   }
 
-  const updated = await prisma.profile.update({ where: { id }, data: parsed.data });
+  let updated;
+  try {
+    updated = await prisma.profile.update({ where: { id }, data: parsed.data });
+  } catch (err: unknown) {
+    const errorMsg = String((err as Error)?.message || "");
+    if (errorMsg.includes("deceasedDate")) {
+      const { deceasedDate, ...dataWithoutDeceasedDate } = parsed.data;
+      updated = await prisma.profile.update({
+        where: { id },
+        data: dataWithoutDeceasedDate,
+      });
+      await prisma.$executeRawUnsafe(
+        `UPDATE "Profile" SET "deceasedDate" = $1::text WHERE id = $2`,
+        deceasedDate ?? null,
+        id
+      );
+      (updated as Record<string, unknown>).deceasedDate = deceasedDate ?? null;
+    } else {
+      throw err;
+    }
+  }
   revalidatePath("/members");
   revalidatePath(`/members/${id}`);
   revalidatePath("/in-memoriam");

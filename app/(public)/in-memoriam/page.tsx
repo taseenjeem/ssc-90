@@ -66,7 +66,7 @@ export default async function InMemoriamPage() {
                 className="bg-white/70 backdrop-blur-sm border border-slate-200 rounded-2xl overflow-hidden shadow-sm grayscale hover:grayscale-0 transition-all duration-500 group flex flex-col hover:shadow-md"
               >
                 {/* Photo */}
-                <Link href={`/members/${member.id}`} className="relative h-52 bg-slate-100 block overflow-hidden">
+                <Link href={`/members/${member.id}`} className="relative aspect-square w-full bg-slate-100 block overflow-hidden">
                   {member.profilePicture ? (
                     <Image
                       src={member.profilePicture}
@@ -76,7 +76,7 @@ export default async function InMemoriamPage() {
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       quality={85}
                       placeholder="blur"
-                      blurDataURL={getShimmerDataUrl(350, 208)}
+                      blurDataURL={getShimmerDataUrl(350, 350)}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full">

@@ -42,7 +42,7 @@ import {
   ExternalLink,
   Sparkles,
 } from "lucide-react";
-import { formatBanglaDate } from "@/lib/utils";
+import { formatBanglaDate, toDateInputValue } from "@/lib/utils";
 import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 const CATEGORIES = ["পুনর্মিলনী", "স্কুল জীবন", "ট্যুর ও আড্ডা", "স্মারক"];
@@ -86,7 +86,7 @@ export default function EditGalleryDialog({
     if (item) {
       setTitle(item.title || "");
       setCategory(item.category || "পুনর্মিলনী");
-      setEventDate(item.eventDate || "");
+      setEventDate(toDateInputValue(item.eventDate));
       setDescription(item.description || "");
       setFeatured(item.featured || false);
       setImageUrl(item.imageUrl || "");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Initiative } from "@prisma/client";
 import {
   createInitiative,
@@ -25,6 +26,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   Plus,
@@ -41,7 +43,7 @@ import {
   ImageIcon,
 } from "lucide-react";
 import Image from "next/image";
-import { formatBanglaDate } from "@/lib/utils";
+import { formatBanglaDate, toDateInputValue } from "@/lib/utils";
 import { getShimmerDataUrl } from "@/lib/imageShimmer";
 
 const BUCKET =
@@ -55,6 +57,7 @@ export default function AdminInitiativesClient({
 }: {
   initiatives: Initiative[];
 }) {
+  const router = useRouter();
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -97,7 +100,7 @@ export default function AdminInitiativesClient({
     setEditingId(init.id);
     setTitle(init.title);
     setDescription(init.description);
-    setDate(init.date);
+    setDate(toDateInputValue(init.date));
     setLocation(init.location);
     setBudget(init.budget || "");
     setImpact(init.impact || "");
@@ -177,6 +180,7 @@ export default function AdminInitiativesClient({
           toast.success("উদ্যোগ সফলভাবে আপডেট হয়েছে!");
           setOpen(false);
           resetForm();
+          router.refresh();
         } else {
           toast.error("আপডেট ব্যর্থ হয়েছে। তথ্য যাচাই করুন।");
         }
@@ -186,6 +190,7 @@ export default function AdminInitiativesClient({
           toast.success("উদ্যোগ সফলভাবে যোগ হয়েছে!");
           setOpen(false);
           resetForm();
+          router.refresh();
         } else {
           toast.error("যোগ করা ব্যর্থ হয়েছে। তথ্য যাচাই করুন।");
         }
@@ -198,6 +203,7 @@ export default function AdminInitiativesClient({
     startTransition(async () => {
       await deleteInitiative(id);
       toast.success("উদ্যোগ মুছে ফেলা হয়েছে।");
+      router.refresh();
     });
   };
 
