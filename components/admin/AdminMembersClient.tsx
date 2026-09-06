@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Profile } from "@prisma/client";
-import { deleteMember, bulkCreateMembers } from "@/actions/members";
+import { deleteMember } from "@/actions/members";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import {
-  Upload,
   MoreVertical,
   Trash2,
   Search,
@@ -81,20 +80,6 @@ export default function AdminMembersClient({
     router.refresh();
   };
 
-  const handleBulkUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
-    const result = await bulkCreateMembers(formData);
-    if (result.success) {
-      toast.success(`${result.count} জন সদস্য সফলভাবে আমদানি হয়েছে!`);
-      router.refresh();
-    } else {
-      toast.error(result.message ?? "আমদানি ব্যর্থ হয়েছে।");
-    }
-  };
-
   return (
     <>
       {/* Toolbar */}
@@ -110,23 +95,6 @@ export default function AdminMembersClient({
         </div>
         <div className="flex gap-2">
           <CreateMemberDialog onDone={() => router.refresh()} />
-          <label className="cursor-pointer">
-            <Button
-              variant="outline"
-              className="rounded-xl border-slate-200 gap-2"
-              asChild
-            >
-              <span>
-                <Upload className="w-4 h-4" /> Excel আমদানি
-                <input
-                  type="file"
-                  accept=".xlsx,.csv"
-                  onChange={handleBulkUpload}
-                  className="hidden"
-                />
-              </span>
-            </Button>
-          </label>
         </div>
       </div>
 
